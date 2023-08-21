@@ -185,22 +185,22 @@ bool inicializarArchivo(bool b, string s)
 
 void turno(bool b, string s)
 {
-  b=true;
-    if(b)
-    {
-      int id = getId(s);
-      if(partida->buscarJugador(s)=="error")
-        cout<<endl<<"No existe este jugador"<<endl;
-      else{
-        partida->ubicarEjercito();
-      }
-        cout<<endl << CYAN <<"El turno del jugador " << id << " ha terminado."<< WHITE << endl;
-    }
-    else
-    {
-        cout<<endl << BOLD_MAGENTA <<"Esta partida no ha sido inicializada correctamente."<< WHITE << endl;
+  // b=true;
+  //   if(b)
+  //   {
+  //     int id = getId(s);
+  //     if(partida->buscarJugador(s)=="error")
+  //       cout<<endl<<"No existe este jugador"<<endl;
+  //     else{
+  //       partida->ubicarEjercito();
+  //     }
+  //       cout<<endl << CYAN <<"El turno del jugador " << id << " ha terminado."<< WHITE << endl;
+  //   }
+  //   else
+  //   {
+  //       cout<<endl << BOLD_MAGENTA <<"Esta partida no ha sido inicializada correctamente."<< WHITE << endl;
 
-    }
+  //   }
   
     
 }
