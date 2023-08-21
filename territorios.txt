@@ -1,0 +1,66 @@
+CONTINENTE
+America del Norte
+PAISES
+1-Alaska
+2-Alberta
+3-America Central
+4-Estados Unidos Orientales
+5-Groenlandia
+6-Territorio Noroccidental
+7-Ontario
+8-Quebec
+9-Estados Unidos Occidentales
+#
+CONTINENTE
+America del Sur
+PAISES
+1-Argentina
+2-Brasil
+3-Peru
+4-Venezuela
+#
+CONTINENTE
+Europa
+PAISES
+1-Gran Bretaña
+2-Islandia
+3-Europa del Norte
+4-Escandinavia
+5-Europa del Sur
+6-Ucrania
+7-Europa Occidenta
+#
+CONTINENTE
+Africa
+PAISES
+1-Congo
+2-Africa Oriental
+3-Egipto
+4-Madagascar
+5-Africa del norte
+6-Africa del sur
+#
+CONTINENTE
+Asia
+PAISES
+1-Afghanistan
+2-China
+3-India
+4-Irkutsk
+5-Japon
+6-Kamchatka
+7-Medio Oriente
+8-Mongolia
+9-Siam
+10-Siberia
+11-Ural
+12-Yakutsk
+#
+CONTINENTE
+Australia
+PAISES
+1-Australia Oriental
+2-Indonesia
+3-Nueva Guinea
+4-Austrlia Occidental
+#
