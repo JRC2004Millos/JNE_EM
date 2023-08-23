@@ -16,11 +16,12 @@ private:
   int caballeria;
 
 public:
-  Jugador(string,string);
+  Jugador(string,string, int, int, int);
   Jugador(string,string,int);
   void agregarTerritorio(string);
   int contarTerritorios();
   //getters y setters
+  void mostrarTerritorios();
   vector<string> getTerritorios();
   void setTerritorios(vector<string>);
 
@@ -37,7 +38,9 @@ public:
   void setArtilleria(int);
 
   int getCaballeria();
-  int setCaballeria(int);
+  void setCaballeria(int);
+
+  void ToTerritorios();
 
 };
 
