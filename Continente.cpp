@@ -9,11 +9,9 @@ void Continente::agregarPais(Pais p){
 }
 
 string Continente::buscarPais(int t){
-  string pais;
   for(Pais p : paises){
     if(t == p.getNumero())
-      pais = p.getNombre();
-      return pais;
+      return p.getNombre();
   }
   return "error";
 }
