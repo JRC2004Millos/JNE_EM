@@ -1,66 +1,66 @@
 CONTINENTE
-America del Norte
+america del norte
 PAISES
-1-Alaska
-2-Alberta
-3-America Central
-4-Estados Unidos Orientales
-5-Groenlandia
-6-Territorio Noroccidental
-7-Ontario
-8-Quebec
-9-Estados Unidos Occidentales
+1-alaska
+2-alberta
+3-america central
+4-estados unidos orientales
+5-groenlandia
+6-territorio noroccidental
+7-ontario
+8-quebec
+9-estados unidos occidentales
 #
 CONTINENTE
-America del Sur
+america del sur
 PAISES
-1-Argentina
-2-Brasil
-3-Peru
-4-Venezuela
+1-argentina
+2-brasil
+3-peru
+4-venezuela
 #
 CONTINENTE
-Europa
+europa
 PAISES
-1-Gran Bretaña
-2-Islandia
-3-Europa del Norte
-4-Escandinavia
-5-Europa del Sur
-6-Ucrania
-7-Europa Occidenta
+1-gran bretaña
+2-islandia
+3-europa del norte
+4-escandinavia
+5-europa del sur
+6-ucrania
+7-europa occidenta
 #
 CONTINENTE
-Africa
+africa
 PAISES
-1-Congo
-2-Africa Oriental
-3-Egipto
-4-Madagascar
-5-Africa del norte
-6-Africa del sur
+1-congo
+2-africa oriental
+3-egipto
+4-madagascar
+5-africa del norte
+6-africa del sur
 #
 CONTINENTE
-Asia
+asia
 PAISES
-1-Afghanistan
-2-China
-3-India
-4-Irkutsk
-5-Japon
-6-Kamchatka
-7-Medio Oriente
-8-Mongolia
-9-Siam
-10-Siberia
-11-Ural
-12-Yakutsk
+1-afghanistan
+2-china
+3-india
+4-irkutsk
+5-japon
+6-kamchatka
+7-medio oriente
+8-mongolia
+9-siam
+10-siberia
+11-ural
+12-yakutsk
 #
 CONTINENTE
-Australia
+australia
 PAISES
-1-Australia Oriental
-2-Indonesia
-3-Nueva Guinea
-4-Austrlia Occidental
+1-australia oriental
+2-indonesia
+3-nueva guinea
+4-austrlia occidental
 #
