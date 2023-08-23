@@ -13,7 +13,7 @@ private:
 public:
   Partida();
   void inicializar();
-  void turno();
+  void turno(int);
   void agregarJugador(string,string,int);
   void getJugadores();
   void setContinentes(vector<Continente>);
@@ -25,10 +25,9 @@ public:
   int pedirPais(string, Continente);
   Continente buscarContinente(int);
   vector<Continente> leerContinentes();
-  string buscarJugador(string);
+  int buscarJugador(string);
   void ubicarEjercito(Jugador);
   int tropasAdicionales(string);
-  void turno(int);
   void agregarTropasTerr(Jugador);
   void atacar();
   int Dado();
