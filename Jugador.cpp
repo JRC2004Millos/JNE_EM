@@ -10,9 +10,10 @@ Jugador::Jugador(string n, string c, int i, int a, int ca){
   this->caballeria = ca;
 }
 
-Jugador::Jugador(string n, string c){
+Jugador::Jugador(string n, string c, int i){
   this->nombre = n;
   this->color = c;
+  this->infanteria = i;
 }
 
 void Jugador::agregarTerritorio(string t){
@@ -23,27 +24,64 @@ int Jugador::contarTerritorios(){
   return this->territorios.size();
 }
 
+void Jugador::mostrarTerritorios(){
+  cout<<endl<<"Territorios del jugador "<<this->nombre<<" :"<<endl;
+  for(string s : territorios){
+    cout<<endl<<s;
+  }
+  cout<<endl;
+}
+
 vector<string> Jugador:: getTerritorios(){
   return territorios;
 }
 void Jugador:: setTerritorios(vector<string> territorios){
   this->territorios = territorios;
 }
+
+
 string Jugador::getNombre(){
   return this->nombre;
 }
 void Jugador::setNombre(string nombre){
   this->nombre = nombre;
 }
+
+
 string Jugador::getColor(){
   return color;
 }
  void Jugador::setColor(string color){
     this->color = color;
  }
+
+
 int Jugador::getInfanteria(){
   return infanteria;
 }
 void Jugador::setInfanteria(int infanteria){
-  this->infanteria = tropas_j;
+  this->infanteria = infanteria;
+}
+
+
+int Jugador::getArtilleria(){
+  return artilleria;
+}
+void Jugador::setArtilleria(int artilleria){
+  this->artilleria = artilleria;
+}
+
+
+int Jugador::getCaballeria(){
+  return caballeria;
+}
+void Jugador::setCaballeria(int caballeria){
+  this->caballeria = caballeria;
+}
+void Jugador::ToTerritorios(){
+  for(int i=0;i<territorios.size();i++)
+    {
+      cout<<i+1;
+      cout<<endl<<territorios[i];
+    }
 }
