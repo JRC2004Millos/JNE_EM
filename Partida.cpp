@@ -47,10 +47,10 @@ int Partida::pedirContinente(string nombre){
   int continente;
   do{
     mostrarContinentes();
-    cout<<endl<<nombre<< CYAN << ", digite el número del continente que desea escoger: " << WHITE;
+    cout<<endl<<nombre<<  ", digite el número del continente que desea escoger: ";
     cin>>continente;
     if(continente<1 && continente>6)
-      cout<<BOLD_MAGENTA<<endl<<"Ingresó un valor inválido, inténtelo de nuevo"<<endl<<WHITE;
+      cout<<endl<<"Ingresó un valor inválido, inténtelo de nuevo"<<endl<<;
   }while(continente<1 && continente>6);
   return continente;
 }
@@ -60,7 +60,7 @@ int Partida::pedirPais(string nombre, Continente c){
   bool encontrado = false;
   do{
     c.mostrarPaises();
-    cout<<endl<<nombre<< CYAN << ", digite el número del país que desea escoger: " << WHITE;
+    cout<<endl<<nombre<<", digite el número del país que desea escoger: ";
     cin>>pais;
     if(pais == 0)
       c = continentes[pedirContinente(nombre) - 1];
@@ -84,7 +84,7 @@ void Partida::escogerTerritorio(){
 }
 
 void Partida::asignarTerritorios(){
-  cout << endl << CYAN <<"¡Es hora de escoger sus territorios!" << WHITE << endl;
+  cout << endl << "¡Es hora de escoger sus territorios!" << endl;
   continentes = leerContinentes();
   while(!verificarContinentes()){    
     escogerTerritorio();
@@ -111,7 +111,7 @@ vector<Continente> Partida::leerContinentes(){
   int i = 0;
   archivo.open("territorios.txt");
   if (!archivo)
-      cout << BOLD_MAGENTA <<  "No se pudo abrir el archivo." << WHITE << endl;
+      cout << "No se pudo abrir el archivo." << endl;
   else{
     getline(archivo,leer);
     while(leer != "FIN")
