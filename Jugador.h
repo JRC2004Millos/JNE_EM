@@ -1,6 +1,3 @@
-#ifndef JUGADOR_H
-#define JUGADOR_H
-
 #include <iostream>
 #include <vector>
 
@@ -43,5 +40,3 @@ public:
   void ToTerritorios();
 
 };
-
-#endif //JUGADOR_H
