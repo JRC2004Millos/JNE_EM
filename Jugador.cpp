@@ -17,7 +17,7 @@ Jugador::Jugador(string n, string c, int i){
 }
 
 void Jugador::agregarTerritorio(string t){
-  territorios.push_back(t);
+  this->territorios.push_back(t);
 }
 
 int Jugador::contarTerritorios(){
@@ -25,9 +25,9 @@ int Jugador::contarTerritorios(){
 }
 
 void Jugador::mostrarTerritorios(){
-  cout<<endl<<"Territorios del jugador "<<this->nombre<<" :"<<endl;
-  for(string s : territorios){
-    cout<<endl<<s;
+  cout<<endl<<"Territorios del jugador "<<this->nombre<<":"<<endl;
+  for(int i = 0; i < this->territorios.size(); i++){
+    cout<<endl<<this->territorios[i];
   }
   cout<<endl;
 }
@@ -81,7 +81,6 @@ void Jugador::setCaballeria(int caballeria){
 void Jugador::ToTerritorios(){
   for(int i=0;i<territorios.size();i++)
     {
-      cout<<i+1;
-      cout<<endl<<territorios[i];
+      cout<<endl<<i+1<<". "<<territorios[i];
     }
 }
