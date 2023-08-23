@@ -35,6 +35,7 @@ void Jugador::mostrarTerritorios(){
 vector<string> Jugador:: getTerritorios(){
   return territorios;
 }
+
 void Jugador:: setTerritorios(vector<string> territorios){
   this->territorios = territorios;
 }
@@ -43,41 +44,43 @@ void Jugador:: setTerritorios(vector<string> territorios){
 string Jugador::getNombre(){
   return this->nombre;
 }
+
 void Jugador::setNombre(string nombre){
   this->nombre = nombre;
 }
 
-
 string Jugador::getColor(){
   return color;
 }
- void Jugador::setColor(string color){
-    this->color = color;
- }
 
+void Jugador::setColor(string color){
+  this->color = color;
+}
 
 int Jugador::getInfanteria(){
   return infanteria;
 }
+
 void Jugador::setInfanteria(int infanteria){
   this->infanteria = infanteria;
 }
 
-
 int Jugador::getArtilleria(){
   return artilleria;
 }
+
 void Jugador::setArtilleria(int artilleria){
   this->artilleria = artilleria;
 }
 
-
 int Jugador::getCaballeria(){
   return caballeria;
 }
+
 void Jugador::setCaballeria(int caballeria){
   this->caballeria = caballeria;
 }
+
 void Jugador::ToTerritorios(){
   for(int i=0;i<territorios.size();i++)
     {
