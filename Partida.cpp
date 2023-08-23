@@ -5,9 +5,6 @@
 #include <fstream>
 #include <cstdlib>
 #include <ctime>
-#define BOLD_MAGENTA "\033[1;35m"
-#define WHITE "\033[37m"
-#define CYAN "\033[36m"
 
 using namespace std;
 
@@ -47,11 +44,11 @@ int Partida::pedirContinente(string nombre){
   int continente;
   do{
     mostrarContinentes();
-    cout<<endl<<nombre<<  ", digite el número del continente que desea escoger: ";
+    cout<<endl<<nombre<< ", digite el número del continente que desea escoger: ";
     cin>>continente;
-    if(continente<1 && continente>6)
-      cout<<endl<<"Ingresó un valor inválido, inténtelo de nuevo"<<endl<<;
-  }while(continente<1 && continente>6);
+    if(continente<1 || continente>6)
+      cout<<endl<<"Ingresó un valor inválido, inténtelo de nuevo"<<endl;
+  }while(continente<1 || continente>6);
   return continente;
 }
 
@@ -60,7 +57,7 @@ int Partida::pedirPais(string nombre, Continente c){
   bool encontrado = false;
   do{
     c.mostrarPaises();
-    cout<<endl<<nombre<<", digite el número del país que desea escoger: ";
+    cout<<endl<<nombre<< ", digite el número del país que desea escoger: ";
     cin>>pais;
     if(pais == 0)
       c = continentes[pedirContinente(nombre) - 1];
@@ -74,7 +71,7 @@ int Partida::pedirPais(string nombre, Continente c){
 
 void Partida::escogerTerritorio(){
   int c, p;
-  for(Jugador j : jugadores){
+  for(Jugador &j : jugadores){
     c = pedirContinente(j.getNombre()) - 1;
     p = pedirPais(j.getNombre(), continentes[c]);
     string territorio = continentes[c].buscarPais(p);        
@@ -84,12 +81,12 @@ void Partida::escogerTerritorio(){
 }
 
 void Partida::asignarTerritorios(){
-  cout << endl << "¡Es hora de escoger sus territorios!" << endl;
+  cout << endl <<"¡Es hora de escoger sus territorios!" << endl;
   continentes = leerContinentes();
   while(!verificarContinentes()){    
     escogerTerritorio();
   }
-  for(Jugador j : jugadores){
+  for(Jugador &j : jugadores){
     j.mostrarTerritorios();
   }
 }
@@ -111,7 +108,7 @@ vector<Continente> Partida::leerContinentes(){
   int i = 0;
   archivo.open("territorios.txt");
   if (!archivo)
-      cout << "No se pudo abrir el archivo." << endl;
+      cout <<  "No se pudo abrir el archivo." << endl;
   else{
     getline(archivo,leer);
     while(leer != "FIN")
@@ -152,29 +149,14 @@ void Partida::mostrarContinentes(){
   }
 }
 
-vector<string> separar(string cadena, char separador){
-    int posInicial = 0;
-    int posEncontrada = 0;
-    string separado;
-    vector<string> resultado;
-
-    while(posEncontrada >= 0)
-    {
-        posEncontrada = cadena.find(separador, posInicial);
-        separado = cadena.substr(posInicial, posEncontrada - posInicial);
-        posInicial = posEncontrada + 1;
-        resultado.push_back(separado);
-    }
-
-    return resultado;
-}
-
-string Partida::buscarJugador(string nombre){
+int Partida::buscarJugador(string nombre){
+  int i = 0;
   for(Jugador j : jugadores){
     if(nombre == j.getNombre())
-      return nombre;
+      return i;
+    i++;
   }
-  return "error";
+  return -1;
 }
 
 void Partida::ubicarEjercito(Jugador j){
@@ -200,6 +182,7 @@ int Partida::tropasAdicionales (string nombre){
   }
   return 0;
 }
+
 void Partida::agregarTropasTerr(Jugador j){
   char seguir;
   int trop;
@@ -207,9 +190,9 @@ void Partida::agregarTropasTerr(Jugador j){
   
  do{
     j.ToTerritorios();
-   cout << endl << "Dijite el nombre del pais al que le desea agregar tropas: " << endl;
+   cout << endl << "Dijite el nombre del pais al que le desea agregar tropas: ";
    cin >> pais;
-   cout << endl << "Cuantas tropas desea agregar: " << endl;
+   cout << endl << "Cuantas tropas desea agregar: ";
    cin >> trop;
   
     for(int i = 0;j.getTerritorios().size();i++){
@@ -220,6 +203,7 @@ void Partida::agregarTropasTerr(Jugador j){
        
    } while(j.getInfanteria() != 0 || seguir == 'n');
 } 
+
 void Partida:: atacar(){
   string pai;
   int at;
@@ -395,18 +379,33 @@ if(pai == "china"){
     cin >>at;
   }
 }
-void Partida::turno(int cantJugadores){
-  int tropasmas=0;
-    for(int i=0; i<jugadores.size(); i++){
-      ubicarEjercito(jugadores[i]);
-      agregarTropasTerr(jugadores [i]);
-    }
-  
+
+void Partida::turno(int pos){
+  ubicarEjercito(jugadores[pos]);
+  agregarTropasTerr(jugadores[pos]);
 }
+
 int Partida::Dado(){
     srand(time(NULL));
     int min = 1, max = 6;
     int num = min + rand() % (max - min + 1);
     cout << num << endl;
     return num;
+}
+
+vector<string> separar(string cadena, char separador){
+    int posInicial = 0;
+    int posEncontrada = 0;
+    string separado;
+    vector<string> resultado;
+
+    while(posEncontrada >= 0)
+    {
+        posEncontrada = cadena.find(separador, posInicial);
+        separado = cadena.substr(posInicial, posEncontrada - posInicial);
+        posInicial = posEncontrada + 1;
+        resultado.push_back(separado);
+    }
+
+    return resultado;
 }
