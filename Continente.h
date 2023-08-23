@@ -7,6 +7,7 @@ using namespace std;
 class Continente{
 private:
   int numero;
+  int contador;
   string nombre;
   vector <Pais> paises;
 public:
@@ -18,8 +19,16 @@ public:
   string buscarPais(int);
   vector <Pais> borrarPais(int);
   void mostrarPaises();
-  string paisOcupado(int,string);
+  bool paisOcupado(int);
+  string verificarContinente(string);
+  bool verificarPaises();
+  void cambiarTropas(string, int);
+  vector<Pais> obtenerDisponibles();
+  void marcarOcupado(int,string);
 
+  int getCantiPaises();
+  void setContador(int);
+  int getContador();
   int getNumero();
   void setNumero(int);
   void setNombre(string);
