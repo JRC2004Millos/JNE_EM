@@ -18,4 +18,6 @@ public:
   int getNumero();
   void setPropietario(string);
   string getPropietario();
+  void setTropas(int);
+  int getTropas();
 };
