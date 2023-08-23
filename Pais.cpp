@@ -38,3 +38,12 @@ void Pais::setPropietario(string p){
 string Pais::getPropietario(){
   return this->propietario;
 }
+
+void Pais::setTropas(int t){
+  this->tropas = t;
+}
+
+int Pais::getTropas(){
+  return this->tropas;
+}
+
