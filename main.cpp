@@ -1,7 +1,9 @@
 #include <iostream>
+#include <locale>
 #include <string.h>
 #include <fstream>
 #include <list>
+#include <queue>
 #include "Partida.h"
 
 using namespace std;
@@ -21,16 +23,22 @@ string asignarColor(int, list<string> *);
 string getNombreArchivo(string);
 string getId(string);
 int asignarInfanteria(int);
+queue <Jugador> pedirColaJugadores();
 
 int cantJugadores = 0;
 
+queue <Jugador> colaJugadores;
+
 Partida * partida = new Partida();
 
-int main(){
+int main()
+{
+    setlocale(LC_ALL, "");
     comandos();
 }
 
-void comandos(){
+void comandos()
+{
     int seleccion;
     string comando, separado;
     bool inicializado = false;
@@ -39,11 +47,11 @@ void comandos(){
     {
         cout<<endl<<"$";
         getline(cin, comando, '\n');
-      
+
         if(comando=="inicializar")
             inicializado = inicializar(inicializado);
         else if(comando.find("inicializar")==0)
-            inicializado = inicializarArchivo(inicializado,comando);           
+            inicializado = inicializarArchivo(inicializado,comando);
         else if(comando=="ayuda")
             ayuda();
         else if(comando=="conquista_mas_barata")
@@ -64,7 +72,8 @@ void comandos(){
     while(comando != "salir");
 }
 
-void ayuda(){
+void ayuda()
+{
     cout << endl << " » CONFIGURACIÓN DEL JUEGO « " << endl;
     cout <<endl << "--- inicializar --- \n" << " ▻ Realiza las operaciones necesarias para inicializar el juego, de acuerdo a las instrucciones entregadas" << endl;
     cout <<endl << "--- turno <id_jugador> --- \n" << " ▻ Realiza las operaciones descritas dentro del turno de un jugador (obtener nuevas unidades, atacar y forticar)." << endl;
@@ -78,79 +87,93 @@ void ayuda(){
     cout <<endl << "--- conquista_mas_barata --- \n" << " ▻ De todos los territorios posibles, calcular aquel que pueda implicar un menor número de unidades de ejército perdidas" << endl;
 }
 
-bool inicializar(bool b){
-  if(b)
-    cout<<endl << "El juego ya ha sido inicializado."<< endl;
-    else{
-      b = true;
-      leerJugadores();
-      partida->asignarTerritorios();
-      cout<<endl << "El juego se ha inicializado correctamente."<< endl;
+bool inicializar(bool b)
+{
+    if(b)
+        cout<<endl << "El juego ya ha sido inicializado."<< endl;
+    else
+    {
+        b = true;
+        leerJugadores();
+        partida->asignarTerritorios();
+        cout<<endl << "El juego se ha inicializado correctamente."<< endl;
+        colaJugadores = pedirColaJugadores();
     }
-  return b;
+    return b;
 }
 
-void leerJugadores(){
-  string nombre, color;     
-  list <string> * colores = new list<string> ();
-  llenarColores(colores);
-  do{
-    cout<<endl<< "Ingrese la cantidad de jugadores (3-6): ";
-    cin>>cantJugadores;
-    if(cantJugadores<3 || cantJugadores>6){
-      cout <<endl << "Ingresó un valor inválido, inténtelo de nuevo"<< endl;
+void leerJugadores()
+{
+    string nombre, color;
+    list <string> * colores = new list<string> ();
+    llenarColores(colores);
+    do
+    {
+        cout<<endl<< "Ingrese la cantidad de jugadores (3-6): ";
+        cin>>cantJugadores;
+        if(cantJugadores<3 || cantJugadores>6)
+        {
+            cout <<endl << "Ingresó un valor inválido, inténtelo de nuevo"<< endl;
+        }
     }
-  }while(cantJugadores<3 || cantJugadores>6);
-  for(int i=0; i<cantJugadores; i++){
-    cout<< endl << "Ingrese el nombre o identificador del jugador "<< i+1<<": ";
-    cin>>nombre;
-    color = asignarColor(cantJugadores, colores);          
-    partida -> agregarJugador(nombre, color, asignarInfanteria(cantJugadores));
-  }
+    while(cantJugadores<3 || cantJugadores>6);
+    for(int i=0; i<cantJugadores; i++)
+    {
+        cout<< endl << "Ingrese el nombre o identificador del jugador "<< i+1<<": ";
+        cin>>nombre;
+        color = asignarColor(cantJugadores, colores);
+        partida -> agregarJugador(nombre, color, asignarInfanteria(cantJugadores));
+    }
 }
 
-int asignarInfanteria(int cantJugadores){
-  if(cantJugadores == 3)
-    return 35;
-  
-  else if(cantJugadores == 4)
-    return 30;
-  
-  else if(cantJugadores == 5)
-    return 25;
-  
-  else if(cantJugadores == 6)
-    return 20; 
-  
-  else 
-    return 0;
+int asignarInfanteria(int cantJugadores)
+{
+    if(cantJugadores == 3)
+        return 35;
+
+    else if(cantJugadores == 4)
+        return 30;
+
+    else if(cantJugadores == 5)
+        return 25;
+
+    else if(cantJugadores == 6)
+        return 20;
+
+    else
+        return 0;
 }
 
-void llenarColores(list <string> *colores){
-  colores->push_back("amarillo");
-  colores->push_back("azul");
-  colores->push_back("rojo");
-  colores->push_back("verde");
-  colores->push_back("gris");
-  colores->push_back("negro");
+void llenarColores(list <string> *colores)
+{
+    colores->push_back("amarillo");
+    colores->push_back("azul");
+    colores->push_back("rojo");
+    colores->push_back("verde");
+    colores->push_back("gris");
+    colores->push_back("negro");
 }
 
-string asignarColor(int cantJug, list<string> * colores){
+string asignarColor(int cantJug, list<string> * colores)
+{
     string col;
     bool encontrado = false;
     cout << endl << "Los colores disponibles son: " <<endl;
     for(string color : *colores)
         cout << endl << color;
-    do{
-      cout << endl << "\nEscoga el color: ";
-      cin >> col;
-      for(string color : *colores){
-        if(col == color)
-          encontrado = true;
-      }
-      if(!encontrado)
-        cout << endl << "Ingresó un color erróneo, inténtelo de nuevo";
-    }while(!encontrado);
+    do
+    {
+        cout << endl << "\nEscoga el color: ";
+        cin >> col;
+        for(string color : *colores)
+        {
+            if(col == color)
+                encontrado = true;
+        }
+        if(!encontrado)
+            cout << endl << "Ingresó un color erróneo, inténtelo de nuevo";
+    }
+    while(!encontrado);
     auto it = colores->begin();
     while (it != colores->end())
     {
@@ -165,8 +188,10 @@ string asignarColor(int cantJug, list<string> * colores){
     return col;
 }
 
-bool inicializarArchivo(bool b, string s){
-    if(b){
+bool inicializarArchivo(bool b, string s)
+{
+    if(b)
+    {
         cout<<endl<< "El juego ya ha sido inicializado."<<endl;
     }
     else
@@ -178,29 +203,48 @@ bool inicializarArchivo(bool b, string s){
     return b;
 }
 
-void turno(bool b, string s){
-  if(b){
-    string id = getId(s);
-    int pos = partida->buscarJugador(id);
-    if(pos < 0)
-      cout<<endl<<"No existe este jugador"<<endl;
-    else{   
-      partida->turno(pos);
-    }
-    cout<<endl << "El turno del jugador " << id << " ha terminado."<< endl;
-  }
-  else
-    cout<<endl << "Esta partida no ha sido inicializada correctamente." << endl;  
+queue <Jugador> pedirColaJugadores()
+{
+    queue <Jugador> cola;
+    vector <Jugador> jugadores = partida->getJugadores();
+    for(Jugador j : jugadores)
+        cola.push(j);
+    return cola;
 }
 
-void conquista_barata(bool juego){
+void turno(bool b, string s)
+{
+    if(b)
+    {
+        string id = getId(s);
+        int pos = partida->buscarJugador(id);
+        Jugador proxJugador = colaJugadores.front();
+        cout<<endl<<proxJugador.getNombre()<<endl;
+        colaJugadores.pop();
+        colaJugadores.push(proxJugador);
+        if(pos < 0 || proxJugador.getNombre() != id)
+            cout<<endl<<"No existe este jugador o no es su turno"<<endl;
+        else
+        {
+            partida->turno(pos);
+
+        }
+        cout<<endl << "El turno del jugador " << id << " ha terminado."<< endl;
+    }
+    else
+        cout<<endl << "Esta partida no ha sido inicializada correctamente." << endl;
+}
+
+void conquista_barata(bool juego)
+{
     if(juego==false)
-      cout<<endl<< "El juego no ha sido inicializado correctamente" << endl;
+        cout<<endl<< "El juego no ha sido inicializado correctamente" << endl;
     else
         cout<<endl << "Jugador no válido"<< endl;
 }
 
-void costo_conquista(bool b){
+void costo_conquista(bool b)
+{
     if(b)
     {
         cout<<endl<< "Para conquistar el territorio <territorio>, debe atacar desde <territorio_1>, pasando por los territorios <territorio_2>, <territorio_3>, ..., <territorio_m>. Debe conquistar<n>unidades de ejército."<< endl;
@@ -211,7 +255,8 @@ void costo_conquista(bool b){
     }
 }
 
-void guardar(bool b, string s, fstream& txt){
+void guardar(bool b, string s, fstream& txt)
+{
     if(b)
     {
         string nombreArchivo = getNombreArchivo(s) + ".txt";
@@ -232,8 +277,10 @@ void guardar(bool b, string s, fstream& txt){
     }
 }
 
-void guardar_comprimido(bool b, string s, fstream& bin){
-    if(b){
+void guardar_comprimido(bool b, string s, fstream& bin)
+{
+    if(b)
+    {
         string nombreArchivo = getNombreArchivo(s) + ".dat";
         bin.open(nombreArchivo,ios::binary |ios::out);
         if(!bin)
@@ -252,14 +299,16 @@ void guardar_comprimido(bool b, string s, fstream& bin){
     }
 }
 
-string getId(string x){
+string getId(string x)
+{
     size_t pos = x.find(" ");
     string aux = x.substr(pos + 1);
     string id = aux;
     return id;
 }
 
-string getNombreArchivo(string x){
+string getNombreArchivo(string x)
+{
     size_t pos = x.find(" ");
     string aux = x.substr(pos + 1);
     return aux;
