@@ -1,129 +1,176 @@
 #include "Continente.h"
 
-Continente::Continente(){
-  
+Continente::Continente()
+{
+
 }
 
-void Continente::agregarPais(Pais p){
-  this->paises.push_back(p);
+void Continente::agregarPais(Pais p)
+{
+    this->paises.push_back(p);
 }
 
-string Continente::buscarPais(int t){
-  for(Pais p : paises){
-    if(t == p.getNumero())
-      return p.getNombre();
-  }
-  return "error";
+string Continente::buscarPais(int t)
+{
+    for(Pais p : paises)
+    {
+        if(t == p.getNumero())
+            return p.getNombre();
+    }
+    return "error";
 }
 
-vector<Pais> Continente::obtenerDisponibles(){
-  vector <Pais> disponibles;
-  for(Pais p : paises){
-    if(p.getPropietario() == "libre")
-      disponibles.push_back(p);
-  }
-  return disponibles;
+bool Continente::verificarTerritorio(int n, string jugador)
+{
+    if(paises[n].getPropietario() == jugador)
+        return true;
+    return false;
 }
 
-vector <Pais> Continente::borrarPais(int pais){
-  for(auto it = paises.begin(); it != paises.end(); ++it){
-    if(pais == it->getNumero())
-      paises.erase(it);
-  }
-  return paises;
+vector<Pais> Continente::obtenerDisponibles()
+{
+    vector <Pais> disponibles;
+    for(Pais p : paises)
+    {
+        if(p.getPropietario() == "libre")
+            disponibles.push_back(p);
+    }
+    return disponibles;
 }
 
-void Continente::mostrarPaises(){
-  cout<<endl<<this->nombre<<endl;
-  cout<<endl<<"0. volver a continentes"<<endl;
-  for(Pais p : paises){
-    cout<<endl<<p.getNumero()<<". "<<p.getNombre()<<endl<<p.getPropietario()<<endl;
-  }
+vector <Pais> Continente::borrarPais(int pais)
+{
+    for(auto it = paises.begin(); it != paises.end(); ++it)
+    {
+        if(pais == it->getNumero())
+            paises.erase(it);
+    }
+    return paises;
 }
 
-string Continente::verificarContinente(string nombre){
-  int i = 0;
-  for(Pais p : paises)
-    if(p.getPropietario() == nombre)
-      i++;
-  if(i == paises.size())
-    return this->nombre;
-  else
-    return "nada";
+void Continente::mostrarPaises()
+{
+    cout<<endl<<this->nombre<<endl;
+    cout<<endl<<"0. volver a continentes"<<endl;
+    for(Pais p : paises)
+    {
+        cout<<endl<<p.getNumero()<<". "<<p.getNombre()<<endl<<p.getPropietario()<<endl;
+    }
 }
 
-bool Continente::verificarPaises(){
-  int i = 0;
-  for(Pais p : paises){
-    if(p.getPropietario() != "libre")
-      i++;
-  }
-  if(paises.size() == i)
-    return true;
-  return false;
+void Continente::mostrarVecinos(int n)
+{
+    this->paises[n].mostrarPaisesVecinos();
 }
 
-void Continente::marcarOcupado(int n, string nombre){
-  paises[n-1].setPropietario(nombre);
-  this->contador++;
+string Continente::verificarContinente(string nombre)
+{
+    int i = 0;
+    for(Pais p : this->paises)
+        if(p.getPropietario() == nombre)
+            i++;
+    if(i == paises.size())
+        return this->nombre;
+    else
+        return "nada";
 }
 
-bool Continente::paisOcupado(int numero){
-  if(paises[numero-1].getPropietario() == "libre")
-    return true;
-  return false;
+bool Continente::verificarPaises()
+{
+    int i = 0;
+    for(Pais p : this->paises)
+    {
+        if(p.getPropietario() != "libre")
+            i++;
+    }
+    if(paises.size() == i)
+        return true;
+    return false;
 }
 
-void Continente::cambiarTropas(string pais, int trop){
-  for(Pais p : paises){
-    if(pais== p.getNombre())
-      p.setTropas(trop);
-  }  
+void Continente::marcarOcupado(int n, string nombre)
+{
+    this->paises[n-1].setPropietario(nombre);
+    this->paises[n-1].setTropas(1);
+    this->contador++;
+}
+
+bool Continente::paisOcupado(int numero)
+{
+    if(paises[numero-1].getPropietario() == "libre")
+        return true;
+    return false;
+}
+
+void Continente::sumarTropas(int p, int trop)
+{
+    this->paises[p].sumarTropas(trop);
+}
+
+void Continente::restarTropas(int p, int trop)
+{
+    this->paises[p].restarTropas(trop);
 }
 //GETTERS Y SETTERS
 
-int Continente::getCantiPaises(){
-  return this->paises.size();
+int Continente::getTropas(int n)
+{
+    return this->paises[n].getTropas();
 }
 
-vector <Pais> Continente::getPaises(){
-  return this->paises;
+int Continente::getCantiPaises()
+{
+    return this->paises.size();
 }
 
-void Continente::setPaises(vector<Pais>paises){
-  this->paises = paises;
+vector <Pais> Continente::getPaises()
+{
+    return this->paises;
 }
 
-int Continente::getNumero(){
-  return this->numero;
+void Continente::setPaises(vector<Pais>paises)
+{
+    this->paises = paises;
 }
 
-void Continente::setNumero(int n){
-  this->numero = n;
+int Continente::getNumero()
+{
+    return this->numero;
 }
 
-void Continente::setNombre(string n){
-  this->nombre = n;
+void Continente::setNumero(int n)
+{
+    this->numero = n;
 }
 
-string Continente::getNombre(){
-  return this->nombre;
+void Continente::setNombre(string n)
+{
+    this->nombre = n;
 }
 
-void Continente::setContador(int n){
-  this->contador = n;
+string Continente::getNombre()
+{
+    return this->nombre;
 }
 
-int Continente::getContador(){
-  return this->contador;
+void Continente::setContador(int n)
+{
+    this->contador = n;
+}
+
+int Continente::getContador()
+{
+    return this->contador;
 }
 
 //toString
 
-string Continente::toString(){
-  string cadena = this->nombre;
-  for(Pais p : this->paises){
-    cadena += "\n" + p.getNombre();
-  }
-  return cadena;
+string Continente::toString()
+{
+    string cadena = this->nombre;
+    for(Pais p : this->paises)
+    {
+        cadena += "\n" + p.getNombre();
+    }
+    return cadena;
 }
