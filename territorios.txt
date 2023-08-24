@@ -2,65 +2,107 @@ CONTINENTE
 america del norte
 PAISES
 1-alaska
+alberta/kamchatka
 2-alberta
+territorio noroccidental/ontario/estados unidos occidentales
 3-america central
+venezuela/estados unidos orientales/estados unidos occidentales
 4-estados unidos orientales
+america central/estados unidos occidentales/ontario/quebec
 5-groenlandia
+islandia/territorio noroccidental/ontario/quebec
 6-territorio noroccidental
+groenlandia/alaska/alberta/ontario
 7-ontario
+estados unidos occidentales/alberta/territorio noroccidental/groenlandia/quebec/estados unidos orientales
 8-quebec
+groenlandia/estados unidos orientales/ontario
 9-estados unidos occidentales
+america central/estados unidos orientales/ontario/alberta
 #
 CONTINENTE
 america del sur
 PAISES
 1-argentina
+brasil/peru
 2-brasil
+argentina/peru/venezuela/africa oriental
 3-peru
+brasil/argentina/venezuela
 4-venezuela
+brasil/peru/america central
 #
 CONTINENTE
 europa
 PAISES
-1-gran bretaña
+1-gran bretana
+islandia/europa del norte/escandinavia/europa occidental
 2-islandia
+gran bretana/escandinavia/groenlandia
 3-europa del norte
+gran bretana/europa occidental/escandinavia/europa del sur/ucrania
 4-escandinavia
+gran bretana/islandia/europa del norte/ucrania
 5-europa del sur
+europa del norte/ucrania/europa occidental/egipto/africa del norte/medio oriente
 6-ucrania
-7-europa occidenta
+europa del norte/escandinavia/europa del sur/afghanistan/medio oriente/ural
+7-europa occidental
+gran bretaa/europa del norte/europa del sur/africa del norte
 #
 CONTINENTE
 africa
 PAISES
 1-congo
+africa del norte/africa oriental/africa del sur
 2-africa oriental
+congo/egipto/madagascar/africa del sur/africa del norte 
 3-egipto
+africa oriental/africa del norte/europa del sur/medio oriente
 4-madagascar
+africa oriental/africa del sur
 5-africa del norte
+egipto/africa oriental/congo/brasil/europa occidental/europa del sur
 6-africa del sur
+congo/africaoriental/madagascar
 #
 CONTINENTE
 asia
 PAISES
 1-afghanistan
+ucrania/medio oriente/china/india/ural
 2-china
+afghanistan/india/siam/mongolia/siberia/ural
 3-india
+afghanistan/medio oriente/china/siam
 4-irkutsk
+kamchatka/yakutsk/siberia/mongolia
 5-japon
+kamchatka/mongolia
 6-kamchatka
+alaska/japon/yakutsk/irkutsk/mongolia
 7-medio oriente
+africa oriental/egipto/europa del sur/ucrania/afghanistan/india
 8-mongolia
+japon/china/irkutsk/siberia/kamchatka
 9-siam
+indonesia/china/india
 10-siberia
+irkutsk/mongolia/ural/yakutsk
 11-ural
+afghanistan/china/siberia/ucrania
 12-yakutsk
+irkutsk/kamchatka/siberia
 #
 CONTINENTE
 australia
 PAISES
 1-australia oriental
+nueva guinea/australia occidental
 2-indonesia
+siam/nueva guinea/australia occidental
 3-nueva guinea
-4-austrlia occidental
+australia oriental/indonesia/australia occidental
+4-australia occidental
+autralia occidental/indonesia/nueva guinea
 #
