@@ -12,7 +12,7 @@ void Continente::agregarPais(Pais p)
 
 string Continente::buscarPais(int t)
 {
-    for(Pais p : paises)
+    for(Pais p : this->paises)
     {
         if(t == p.getNumero())
             return p.getNombre();
@@ -30,7 +30,7 @@ bool Continente::verificarTerritorio(int n, string jugador)
 vector<Pais> Continente::obtenerDisponibles()
 {
     vector <Pais> disponibles;
-    for(Pais p : paises)
+    for(Pais p : this->paises)
     {
         if(p.getPropietario() == "libre")
             disponibles.push_back(p);
@@ -48,6 +48,11 @@ vector <Pais> Continente::borrarPais(int pais)
     return paises;
 }
 
+void Continente::cambiarPropietario(int n, string nom)
+{
+    this->paises[n].setPropietario(nom);
+}
+
 void Continente::mostrarPaises()
 {
     cout<<endl<<this->nombre<<endl;
@@ -56,6 +61,11 @@ void Continente::mostrarPaises()
     {
         cout<<endl<<p.getNumero()<<". "<<p.getNombre()<<endl<<p.getPropietario()<<endl;
     }
+}
+
+string Continente::obtenerPropietario(int n)
+{
+    return this->paises[n].getPropietario();
 }
 
 void Continente::mostrarVecinos(int n)
@@ -118,6 +128,11 @@ int Continente::getTropas(int n)
     return this->paises[n].getTropas();
 }
 
+void Continente::getPaisTropas(int n)
+{
+    cout<<endl<<"Tropas en "<<paises[n].getNombre()<<": "<<paises[n].getTropas()<<endl;
+}
+
 int Continente::getCantiPaises()
 {
     return this->paises.size();
@@ -128,9 +143,9 @@ vector <Pais> Continente::getPaises()
     return this->paises;
 }
 
-void Continente::setPaises(vector<Pais>paises)
+void Continente::setPaises(vector<Pais>p)
 {
-    this->paises = paises;
+    this->paises = p;
 }
 
 int Continente::getNumero()
