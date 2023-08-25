@@ -19,6 +19,7 @@ public:
     void agregarTerritorio(string);
     int contarTerritorios();
     string buscarTerritorio(string);
+    void eliminarTerritorio(string);
     //getters y setters
     void mostrarTerritorios();
     vector<string> getTerritorios();
