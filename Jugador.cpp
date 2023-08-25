@@ -28,12 +28,21 @@ int Jugador::contarTerritorios()
     return this->territorios.size();
 }
 
+void Jugador::eliminarTerritorio(string terr)
+{
+    for(int i=0; i<territorios.size(); i++)
+    {
+        if(terr == territorios[i])
+            territorios.erase(territorios.begin() + i);
+    }
+}
+
 void Jugador::mostrarTerritorios()
 {
     cout<<endl<<"Territorios del jugador "<<this->nombre<<":"<<endl;
-    for(int i = 0; i < this->territorios.size(); i++)
+    for(string &t : this->territorios)
     {
-        cout<<endl<<this->territorios[i];
+        cout<<endl<<t;
     }
     cout<<endl;
 }
