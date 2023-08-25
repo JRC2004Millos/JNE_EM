@@ -27,8 +27,11 @@ public:
     void sumarTropas(int, int);
     void restarTropas(int, int);
     vector<Pais> obtenerDisponibles();
-    void marcarOcupado(int,string);
+    string obtenerPropietario(int);
+    void marcarOcupado(int, string);
     void mostrarVecinos(int);
+    void getPaisTropas(int);
+    void cambiarPropietario(int, string);
 
     int getCantiPaises();
     void setContador(int);
