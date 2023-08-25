@@ -122,7 +122,9 @@ void leerJugadores()
         cout<< endl << "Ingrese el nombre o identificador del jugador "<< i+1<<": ";
         cin>>nombre;
         color = asignarColor(cantJugadores, colores);
-        partida -> agregarJugador(nombre, color, asignarInfanteria(cantJugadores));
+        int tropas = asignarInfanteria(cantJugadores);
+        cout<<endl<<"TROPAS PARA ESTE JUEGO: "<<tropas<<endl;
+        partida -> agregarJugador(nombre, color, tropas);
     }
 }
 
@@ -219,15 +221,16 @@ void turno(bool b, string s)
         string id = getId(s);
         int pos = partida->buscarJugador(id);
         Jugador proxJugador = colaJugadores.front();
-        cout<<endl<<proxJugador.getNombre()<<endl;
-        colaJugadores.pop();
-        colaJugadores.push(proxJugador);
-        if(pos < 0 || proxJugador.getNombre() != id)
-            cout<<endl<<"No existe este jugador o no es su turno"<<endl;
+
+        if(pos < 0)
+            cout<<endl<<"No existe este jugador"<<endl;
+        else if(proxJugador.getNombre() != id)
+            cout<<endl<<"No es el turno de este jugador"<<endl;
         else
         {
             partida->turno(pos);
-
+            colaJugadores.pop();
+            colaJugadores.push(proxJugador);
         }
         cout<<endl << "El turno del jugador " << id << " ha terminado."<< endl;
     }
