@@ -5,9 +5,10 @@ Proyecto Estructuras de Datos
 
 # Para correr el programa
 
-Se debe usar el siguiente comando:
+Después de descargar el archivo .zip y abrir la consola del sistema desde esa carpeta
+se debe usar el siguiente comando:
 
-  g++ main.cpp Partida.cpp Continente.cpp Pais.cpp Jugador.cpp -o main -g
+  g++ *.cpp -o main -g
 
   Este compila todos los archivos de implementación del proyecto.
 
