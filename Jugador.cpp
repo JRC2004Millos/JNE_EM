@@ -1,21 +1,10 @@
 #include "Jugador.h"
 
-using namespace std;
-
-Jugador::Jugador(string n, string c, int i, int a, int ca)
+Jugador::Jugador(string n, string c, vector<Ejercito> t)
 {
     this->nombre = n;
     this->color = c;
-    this->infanteria = i;
-    this->artilleria = a;
-    this->caballeria = ca;
-}
-
-Jugador::Jugador(string n, string c, int i)
-{
-    this->nombre = n;
-    this->color = c;
-    this->infanteria = i;
+    this->tropas = t;
 }
 
 void Jugador::agregarTerritorio(string t)
@@ -67,6 +56,11 @@ string Jugador::buscarTerritorio(string t)
     return "error";
 }
 
+void Jugador::agregarTarjeta(Tarjeta tarjeta)
+{
+    this->tarjetas.push_back(tarjeta);
+}
+
 string Jugador::getNombre()
 {
     return this->nombre;
@@ -89,42 +83,47 @@ void Jugador::setColor(string color)
 
 void Jugador::restarInfanteria(int n)
 {
-    this->infanteria -= n;
+    this->tropas[0].modificarCantidad(n, '-');
 }
 
 void Jugador::sumarInfanteria(int n)
 {
-    this->infanteria += n;
+    this->tropas[0].modificarCantidad(n, '+');
 }
 
 int Jugador::getInfanteria()
 {
-    return infanteria;
+    return this->tropas[0].getCantidad();
 }
 
 void Jugador::setInfanteria(int infanteria)
 {
-    this->infanteria = infanteria;
+    this->tropas[0].setCantidad(infanteria);
 }
 
 int Jugador::getArtilleria()
 {
-    return artilleria;
+    return this->tropas[2].getCantidad();
 }
 
 void Jugador::setArtilleria(int artilleria)
 {
-    this->artilleria = artilleria;
+    this->tropas[2].setCantidad(artilleria);
 }
 
 int Jugador::getCaballeria()
 {
-    return caballeria;
+    return this->tropas[1].getCantidad();
 }
 
 void Jugador::setCaballeria(int caballeria)
 {
-    this->caballeria = caballeria;
+    this->tropas[1].getCantidad();
+}
+
+vector<Tarjeta> Jugador::getTarjetas()
+{
+    return this->tarjetas;
 }
 
 void Jugador::ToTerritorios()
