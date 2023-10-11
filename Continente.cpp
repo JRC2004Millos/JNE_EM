@@ -112,6 +112,11 @@ bool Continente::paisOcupado(int numero)
     return false;
 }
 
+Tarjeta Continente::buscarTarjeta(int n)
+{
+    return this->paises[n].getTarjeta();
+}
+
 void Continente::sumarTropas(int p, int trop)
 {
     this->paises[p].sumarTropas(trop);
