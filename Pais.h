@@ -1,5 +1,10 @@
+#ifndef PAIS_H
+#define PAIS_H
+
 #include <iostream>
 #include <vector>
+
+#include "Tarjeta.h"
 
 using namespace std;
 
@@ -11,10 +16,9 @@ private:
     string propietario;
     int tropas;
     vector <string> paisesVecinos;
+    Tarjeta tarjeta;
 public:
     Pais();
-    Pais(string,int);
-    Pais(string,int,int);
 
     void agregarPaisVecino(string);
     void mostrarPaisesVecinos();
@@ -29,5 +33,8 @@ public:
     void restarTropas(int);
     void setTropas(int);
     int getTropas();
-
+    void setTarjeta(Tarjeta);
+    Tarjeta getTarjeta();
 };
+
+#endif
