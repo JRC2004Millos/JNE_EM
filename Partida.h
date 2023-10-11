@@ -11,6 +11,7 @@ class Partida
 private:
     vector<Jugador> jugadores;
     vector<Continente> continentes;
+    int cantidadIntercambios;
 public:
     Partida();
     void turno(int);
@@ -42,6 +43,7 @@ public:
     int lanzarDado();
     void asignarUltimasTropas();
     string pedirTerritorio(int);
+    void intercambiarCartas(int);
 
 };
 #endif // PARTIDA_H
