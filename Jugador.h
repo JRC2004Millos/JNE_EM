@@ -1,25 +1,22 @@
-#include <iostream>
-#include <vector>
-
-using namespace std;
+#include "Tarjeta.h"
 
 class Jugador
 {
 private:
     vector<string> territorios;
+    vector<Ejercito> tropas;
+    vector<Tarjeta> tarjetas;
     string nombre;
     string color;
-    int infanteria;
-    int artilleria;
-    int caballeria;
 
 public:
-    Jugador(string,string, int, int, int);
-    Jugador(string,string,int);
+    Jugador(string,string,vector<Ejercito>);
     void agregarTerritorio(string);
     int contarTerritorios();
     string buscarTerritorio(string);
     void eliminarTerritorio(string);
+    void agregarTarjeta(Tarjeta);
+
     //getters y setters
     void mostrarTerritorios();
     vector<string> getTerritorios();
@@ -42,6 +39,7 @@ public:
     int getCaballeria();
     void setCaballeria(int);
 
-    void ToTerritorios();
+    vector<Tarjeta> getTarjetas();
 
+    void ToTerritorios();
 };
