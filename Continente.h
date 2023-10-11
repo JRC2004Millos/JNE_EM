@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+
 #include "Pais.h"
 
 using namespace std;
@@ -13,10 +14,8 @@ private:
     vector <Pais> paises;
 public:
     Continente();
-    Continente(string);
 
     bool verificarTerritorio(int, string);
-    void llenarListaPaises();
     void agregarPais(Pais);
     string buscarPais(int);
     vector <Pais> borrarPais(int);
@@ -32,6 +31,7 @@ public:
     void mostrarVecinos(int);
     void getPaisTropas(int);
     void cambiarPropietario(int, string);
+    Tarjeta buscarTarjeta(int);
 
     int getCantiPaises();
     void setContador(int);
