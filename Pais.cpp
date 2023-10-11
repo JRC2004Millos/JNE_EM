@@ -7,19 +7,6 @@ Pais::Pais()
 
 }
 
-Pais::Pais(string n, int num, int tropas)
-{
-    this->nombre = n;
-    this->numero = num;
-    this->tropas = tropas;
-}
-
-Pais::Pais(string n, int num)
-{
-    this->nombre = n;
-    this->numero = num;
-}
-
 void Pais::agregarPaisVecino(string pais)
 {
     this->paisesVecinos.push_back(pais);
@@ -83,3 +70,12 @@ void Pais::restarTropas(int n)
     this->tropas -= n;
 }
 
+void Pais::setTarjeta(Tarjeta t)
+{
+    this->tarjeta = t;
+}
+
+Tarjeta Pais::getTarjeta()
+{
+    return this->tarjeta;
+}
