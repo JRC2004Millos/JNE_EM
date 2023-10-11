@@ -4,6 +4,7 @@
 #include <fstream>
 #include <list>
 #include <queue>
+
 #include "Partida.h"
 
 using namespace std;
@@ -66,6 +67,8 @@ void comandos()
             costo_conquista(inicializado);
         else if(comando=="salir")
             cout<<endl<<"Cerrando el juego...";
+        else if(comando=="" || comando=="\n")
+            cout<<endl;
         else
             cout<<endl<<"Se ingresó un comando erróneo."<<endl;
     }
@@ -141,7 +144,6 @@ int asignarInfanteria(int cantJugadores)
 
     else if(cantJugadores == 6)
         return 20;
-
     else
         return 0;
 }
