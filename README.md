@@ -8,12 +8,12 @@ Proyecto Estructuras de Datos
 Después de descargar el archivo .zip y abrir la consola del sistema desde esa carpeta
 se debe usar el siguiente comando:
 
-  g++ *.cpp -o main -g
+  > g++ -std=c++11 -o main *.cpp
 
   Este compila todos los archivos de implementación del proyecto.
 
 Seguido de:
 
-  main.exe
+  > main
 
   Este ejecuta el programa.
