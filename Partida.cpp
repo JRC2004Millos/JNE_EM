@@ -14,7 +14,10 @@ using namespace std;
 
 vector <string> separar(string,char);
 
-Partida::Partida(){}
+Partida::Partida()
+{ 
+    this->cantidadIntercambios = 0;
+}
 
 void Partida::agregarJugador(string n, string c, int i)
 {
@@ -553,6 +556,8 @@ void Partida::turno(int pos)
                 if(tarjetas[i].getEjercito() == tarjetas[j].getEjercito())
                     iguales++;
             }
+            if(iguales == tarjetas.size())
+                intercambiarCartas(pos);
             //Si hay uno de cada uno
 
         }
@@ -561,6 +566,11 @@ void Partida::turno(int pos)
     agregarTropasTerr(pos);
     atacar(pos);
     fortalecer(pos);
+}
+
+void Partida::intercambiarCartas(int pos)
+{
+    this->cantidadIntercambios++;
 }
 
 void Partida::fortalecer(int pos)
