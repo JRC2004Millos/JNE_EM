@@ -1,5 +1,7 @@
 #include "Jugador.h"
 
+Jugador::Jugador(){}
+
 Jugador::Jugador(string n, string c, vector<Ejercito> t)
 {
     this->nombre = n;
@@ -59,6 +61,38 @@ string Jugador::buscarTerritorio(string t)
 void Jugador::agregarTarjeta(Tarjeta tarjeta)
 {
     this->tarjetas.push_back(tarjeta);
+}
+
+void Jugador::eliminarTarjetas(string eliminar)
+{
+    bool inf = false;
+    bool art = false;
+    bool cab = false;
+    if(eliminar == "Todos"){
+        for(auto it = this->tarjetas.begin(); it != this->tarjetas.end(); ++it){
+            if(it->getEjercito() == "Infanteria" && !inf){
+                inf = true;
+                this->tarjetas.erase(it);
+            } 
+            else if(it->getEjercito() == "Caballeria" && !inf){
+                cab = true;
+                this->tarjetas.erase(it);
+            } 
+            else if(it->getEjercito() == "Artilleria" && !inf){
+                art = true;
+                this->tarjetas.erase(it);
+            }  
+        }
+    }
+    else{
+        int n = 0;
+        for(auto it = this->tarjetas.begin(); n < 3; ++it){
+            if(eliminar == it->getEjercito()){
+                this->tarjetas.erase(it);
+                n++;
+            }
+        }
+    }
 }
 
 string Jugador::getNombre()
@@ -121,9 +155,24 @@ void Jugador::setCaballeria(int caballeria)
     this->tropas[1].getCantidad();
 }
 
+vector<Ejercito> Jugador::getEjercitos()
+{
+    return this->tropas;
+}
+
+void Jugador::setEjercitos(vector <Ejercito> ejercitos)
+{
+    this->tropas = ejercitos;
+}
+
 vector<Tarjeta> Jugador::getTarjetas()
 {
     return this->tarjetas;
+}
+
+void Jugador::setTarjetas(vector <Tarjeta> tarjetas)
+{
+    this->tarjetas = tarjetas;
 }
 
 void Jugador::ToTerritorios()

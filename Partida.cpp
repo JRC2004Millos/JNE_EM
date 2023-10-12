@@ -12,7 +12,7 @@
 
 using namespace std;
 
-vector <string> separar(string,char);
+vector <string> split(string,char);
 
 Partida::Partida()
 { 
@@ -198,15 +198,14 @@ vector<Continente> Partida::leerContinentes()
                 while(leer != "#")
                 {
                     Pais p;
-                    cadenas = separar(leer, '-');
+                    cadenas = split(leer, '-');
                     p.setNumero(stoi(cadenas[0]));
                     p.setNombre(cadenas[1]);
                     p.setPropietario("libre");
                     getline(archivo,leer);
-                    vecinos = separar(leer, '/');
+                    vecinos = split(leer, '/');
                     for(int i = 0; i < vecinos.size(); i++)
                         p.agregarPaisVecino(vecinos[i]);
-                    getline(archivo,leer);
                     Tarjeta t;
                     int num = rand() % 3 + 1;
                     switch (num)
@@ -223,6 +222,7 @@ vector<Continente> Partida::leerContinentes()
                     t.setIdPais(stoi(cadenas[0]));
                     p.setTarjeta(t);
                     c.agregarPais(p);
+                    getline(archivo,leer);
                 }
                 getline(archivo,leer);
                 lista.push_back(c);
@@ -306,7 +306,7 @@ string Partida::pedirPais(int pos, string mensaje)
     do
     {
         cout << endl << mensaje << endl;
-        getline(cin, pais, '\n');
+        cin >> pais;
         if(jugadores[pos].buscarTerritorio(pais) == "error")
         {
             fallo = true;
@@ -402,7 +402,7 @@ vector <int> Partida::paisAAtacar(string pais)
     do
     {
         cout << endl << "Digite el nombre del país a atacar: ";
-        getline(cin, atacar, '\n');
+        cin >> atacar;
         cout << endl << "Vamos a atacar a " << atacar << endl;
         pos = getPosicionesPais(atacar);
         paises = continentes[pos[0]].getPaises();
@@ -504,7 +504,7 @@ char Partida::batalla(vector <int> ata, vector <int> def)
             continentes[def[0]].cambiarPropietario(def[1], continentes[ata[0]].obtenerPropietario(ata[1]));
 
             int posA = buscarJugador(continentes[ata[0]].obtenerPropietario(ata[1]));
-
+            
             jugadores[posA].agregarTarjeta(continentes[def[0]].buscarTarjeta(def[1]));
 
             jugadores[posA].agregarTerritorio(continentes[def[0]].buscarPais(def[1]+1));
@@ -548,19 +548,35 @@ int Partida::lanzarDado () {
 void Partida::turno(int pos)
 {
     vector <Tarjeta> tarjetas = jugadores[pos].getTarjetas();
+    int inf = 0, cab = 0, art = 0;
     if(tarjetas.size() >= 3){
+        //Si todos son el mismo ejercito
         for(int i = 0; i < tarjetas.size(); i++){
-            //Si todos son el mismo ejercito
-            int iguales = 0;
-            for(int j = 0; i < tarjetas.size(); i++){               
-                if(tarjetas[i].getEjercito() == tarjetas[j].getEjercito())
-                    iguales++;
-            }
-            if(iguales == tarjetas.size())
-                intercambiarCartas(pos);
-            //Si hay uno de cada uno
-
+            if(tarjetas[i].getEjercito() == "Infanteria")
+                inf++;
+            else if(tarjetas[i].getEjercito() == "Caballeria")
+                cab++;
+            else if(tarjetas[i].getEjercito() == "Artilleria")
+                art++;
         }
+
+        if(inf >= 3){
+            jugadores[pos].sumarInfanteria(intercambiarCartas());
+            jugadores[pos].eliminarTarjetas("Infanteria");
+        }
+        else if(cab >= 3){
+            jugadores[pos].sumarInfanteria(intercambiarCartas());
+            jugadores[pos].eliminarTarjetas("Caballeria");
+        }
+        else if(art >= 3){
+            jugadores[pos].sumarInfanteria(intercambiarCartas());
+            jugadores[pos].eliminarTarjetas("Artilleria");
+        }
+        else if(inf >= 1 && cab >= 1 && art >= 1){
+            jugadores[pos].sumarInfanteria(intercambiarCartas());
+            jugadores[pos].eliminarTarjetas("Todos");
+        }
+        
     }
     ubicarEjercito(pos);
     agregarTropasTerr(pos);
@@ -568,9 +584,29 @@ void Partida::turno(int pos)
     fortalecer(pos);
 }
 
-void Partida::intercambiarCartas(int pos)
+int Partida::intercambiarCartas()
 {
     this->cantidadIntercambios++;
+    if(this->cantidadIntercambios < 6){
+        switch (this->cantidadIntercambios)
+        {
+            case 1:
+                return 4;
+            case 2:
+                return 6;
+            case 3:
+                return 8;
+            case 4:
+                return 10;
+            case 5:
+                return 12;
+            case 6:
+                return 15;
+        }
+    }
+    else{
+        return (this->cantidadIntercambios - 6) * 5 + 15;
+    }
 }
 
 void Partida::fortalecer(int pos)
@@ -608,7 +644,55 @@ int Partida::verificarTropas(int tropas, string pais)
     return enviar;
 }
 
-vector<string> separar(string cadena, char separador)
+string Partida::archivoTexto()
+{
+    string texto = "";
+
+    //DATOS DE LOS JUGADORES
+    texto += "Jugadores\n";
+    for(Jugador j : this->jugadores){
+        vector <Tarjeta> tarjetas = j.getTarjetas();
+        vector <string> territorios = j.getTerritorios();
+        vector <Ejercito> ejercitos = j.getEjercitos();
+        texto += j.getNombre() + "/" + j.getColor() + "/";
+        for(Tarjeta t : tarjetas){
+            texto += to_string(t.getIdContinente()) + "-" + to_string(t.getIdPais()) + "-" + t.getEjercito() + "#";
+        }
+        texto += "/";
+        for(Ejercito e : ejercitos){
+            texto += to_string(e.getCantidad()) + "-" + e.getTipo() + "-" + e.getColor() + "#";
+        }
+        texto += "/";
+        for(int i = 0; i < territorios.size(); i++){
+            texto += territorios[i] + "#";
+        }
+        texto += "\n";
+    }
+
+    texto += "#\n";
+
+    //DATOS DE LOS CONTINENTES/PAISES
+    texto += "Continentes\n";
+    for(Continente c : continentes){
+        texto += to_string(c.getNumero()) + "/";
+        vector <Pais> paises = c.getPaises();
+        for(Pais p : paises){
+            texto += to_string(p.getNumero()) + "-" + p.getPropietario() + "-" + to_string(p.getTropas()) + "#";
+        }
+        texto += "\n";
+    }
+
+    texto += "FIN";
+
+    return texto;
+}
+
+void Partida::setJugadores(vector <Jugador> jugadores)
+{
+    this->jugadores = jugadores;
+}
+
+vector<string> split(string cadena, char separador)
 {
     int posInicial = 0;
     int posEncontrada = 0;

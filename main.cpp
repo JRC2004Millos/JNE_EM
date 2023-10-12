@@ -4,7 +4,9 @@
 #include <fstream>
 #include <list>
 #include <queue>
+#include <map>
 
+#include "ArbolHuffman.h"
 #include "Partida.h"
 
 using namespace std;
@@ -25,6 +27,10 @@ string getNombreArchivo(string);
 string getId(string);
 int asignarInfanteria(int);
 queue <Jugador> pedirColaJugadores();
+vector <string> separar(string,char);
+void leerTxt(string);
+void leerBin(string);
+void ConteoDeVariables(string);
 
 int cantJugadores = 0;
 
@@ -202,9 +208,64 @@ bool inicializarArchivo(bool b, string s)
     {
         b = true;
         string nombreArchivo = getNombreArchivo(s);
+        vector <string> archivo = separar(nombreArchivo, '.');
+        if(archivo[1] == "txt")
+            leerTxt(nombreArchivo);
+        else if(archivo[1] == "bin" || archivo[1] == "dat")
+            leerBin(nombreArchivo);
+
         cout<<endl<< "'"<<nombreArchivo<<"'"<<" no contiene información válida para inicializar el juego."<< endl;
     }
     return b;
+}
+
+void leerTxt(string fileName)
+{
+    string leer;
+    ifstream file;
+    file.open(fileName);
+    if(!file)
+        cout << endl << "'" << fileName << "'" << " no contiene información válida para inicializar el juego." << endl;
+    else{
+        getline(file, leer);
+        while(leer != "FIN"){
+            if(leer != "#"){
+                vector <string> cadenas = separar(leer, '/');
+                Jugador j;
+                j.setNombre(cadenas[0]);
+                j.setColor(cadenas[1]);
+                vector <string> tarjetas = separar(cadenas[2], '#');
+                vector <Tarjeta> listaTarjetas;
+                for(int i = 0; i < tarjetas.size(); i++){
+                    vector <string> tarjeta = separar(tarjetas[i], '-');
+                    Tarjeta t;
+                    t.setIdContinente(stoi(tarjeta[0]));
+                    t.setIdPais(stoi(tarjeta[1]));
+                    t.setEjercito(tarjeta[2]);
+                    listaTarjetas.push_back(t);
+                }
+                j.setTarjetas(listaTarjetas);
+                vector <string> ejercitos = separar(cadenas[3], '#');
+                vector <Ejercito> listaEjercitos;
+                for(int i = 0; i < ejercitos.size(); i++){
+                    vector <string> ejercito = separar(ejercitos[i], '-');
+                    Ejercito e;
+                    e.setCantidad(stoi(ejercito[0]));
+                    e.setTipo(ejercito[1]);
+                    e.setColor(ejercito[2]);
+                    listaEjercitos.push_back(e);
+                }
+                j.setEjercitos(listaEjercitos);
+                vector <string> territorios = separar(cadenas[4], '#');
+                j.setTerritorios(territorios);
+            }
+            getline(file, leer);
+        }
+    }
+}
+
+void leerBin(string fileName){
+
 }
 
 queue <Jugador> pedirColaJugadores()
@@ -272,6 +333,7 @@ void guardar(bool b, string s, fstream& txt)
         }
         else
         {
+            txt << partida->archivoTexto();
             cout<<endl <<"La partida ha sido guardada correctamente en '" << nombreArchivo << "'"<< endl;
         }
         txt.close();
@@ -294,6 +356,9 @@ void guardar_comprimido(bool b, string s, fstream& bin)
         }
         else
         {
+            
+
+
             cout<<endl<<"La partida ha sido codificada y guardada correctamente en '" << nombreArchivo << "'"<< endl;
             bin.close();
         }
@@ -317,4 +382,52 @@ string getNombreArchivo(string x)
     size_t pos = x.find(" ");
     string aux = x.substr(pos + 1);
     return aux;
+}
+
+vector<string> separar(string cadena, char separador)
+{
+    int posInicial = 0;
+    int posEncontrada = 0;
+    string separado;
+    vector<string> resultado;
+
+    while(posEncontrada >= 0)
+    {
+        posEncontrada = cadena.find(separador, posInicial);
+        separado = cadena.substr(posInicial, posEncontrada - posInicial);
+        posInicial = posEncontrada + 1;
+        resultado.push_back(separado);
+    }
+
+    return resultado;
+}
+
+void ConteoDeVariables(string Archivo){
+
+   ifstream file(Archivo);
+
+    if (!file) {
+        cout << "No se pudo abrir el archivo: " << Archivo << endl;
+        exit;
+    }
+
+    map<char, int> charCount;
+    char character;
+
+    while (file.get(character)) {
+        charCount[character]++;
+    }
+
+    file.close();
+    //ArbolHuffman <char> arbol = ArbolHuffman <char>();
+    for (const auto& pair : charCount) {
+        char character = pair.first;
+        int count = pair.second;
+        //arbol.insertar(character,count);
+
+        if (count > 1)
+        { // Solo mostrar caracteres que se repiten más de una vez
+            cout << "'" << character << "': " << count << " veces" << endl;
+        }
+  }
 }

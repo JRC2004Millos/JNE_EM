@@ -43,7 +43,9 @@ public:
     int lanzarDado();
     void asignarUltimasTropas();
     string pedirTerritorio(int);
-    void intercambiarCartas(int);
+    int intercambiarCartas();
+    string archivoTexto();
 
+    void setJugadores(vector<Jugador>);
 };
 #endif // PARTIDA_H
