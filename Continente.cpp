@@ -10,14 +10,14 @@ void Continente::agregarPais(Pais p)
     this->paises.push_back(p);
 }
 
-string Continente::buscarPais(int t)
+Pais Continente::buscarPais(int t)
 {
     for(Pais p : this->paises)
     {
         if(t == p.getNumero())
-            return p.getNombre();
+            return p;
     }
-    return "error";
+    return Pais();
 }
 
 bool Continente::verificarTerritorio(int n, string jugador)
@@ -68,9 +68,9 @@ string Continente::obtenerPropietario(int n)
     return this->paises[n].getPropietario();
 }
 
-void Continente::mostrarVecinos(int n)
+vector <string> Continente::mostrarVecinos(int n)
 {
-    this->paises[n].mostrarPaisesVecinos();
+    return this->paises[n].mostrarPaisesVecinos();
 }
 
 string Continente::verificarContinente(string nombre)

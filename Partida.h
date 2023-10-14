@@ -16,6 +16,7 @@ public:
     Partida();
     void turno(int);
     void agregarJugador(string,string,int);
+    void agregarJugador(Jugador);
     vector <Jugador> getJugadores();
     void setContinentes(vector<Continente>);
     void asignarTerritorios();
@@ -31,10 +32,10 @@ public:
     int tropasAdicionales(string);
     void agregarTropasTerr(int);
     int pedirTropas(int);
-    string pedirPais(int, string);
+    string pedirPaisPorNumero(int, string);
     void atacar(int);
-    void buscarPaisesVecinos(int, int);
-    vector<int> paisAAtacar(string);
+    vector<string> buscarPaisesVecinos(int, int);
+    vector<int> paisAAtacar(int, int);
     vector<int> getPosicionesPais(string);
     char batalla(vector <int>,vector <int>);
     void fortalecer(int);
@@ -42,7 +43,6 @@ public:
     bool verTropas();
     int lanzarDado();
     void asignarUltimasTropas();
-    string pedirTerritorio(int);
     int intercambiarCartas();
     string archivoTexto();
 

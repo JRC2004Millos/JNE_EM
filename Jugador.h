@@ -1,12 +1,13 @@
 #include "Tarjeta.h"
 #include "Ejercito.h"
+#include "Pais.h"
 
 #include <vector>
 
 class Jugador
 {
 private:
-    vector<string> territorios;
+    vector<Pais> territorios;
     vector<Ejercito> tropas;
     vector<Tarjeta> tarjetas;
     string nombre;
@@ -15,17 +16,17 @@ private:
 public:
     Jugador();
     Jugador(string,string,vector<Ejercito>);
-    void agregarTerritorio(string);
+    void agregarTerritorio(Pais);
     int contarTerritorios();
-    string buscarTerritorio(string);
+    int buscarTerritorio(int);
     void eliminarTerritorio(string);
     void agregarTarjeta(Tarjeta);
     void eliminarTarjetas(string);
 
     //getters y setters
     void mostrarTerritorios();
-    vector<string> getTerritorios();
-    void setTerritorios(vector<string>);
+    vector<Pais> getTerritorios();
+    void setTerritorios(vector<Pais>);
 
     string getNombre();
     void setNombre(string);
@@ -49,6 +50,4 @@ public:
 
     vector<Tarjeta> getTarjetas();
     void setTarjetas(vector<Tarjeta>);
-
-    void ToTerritorios();
 };

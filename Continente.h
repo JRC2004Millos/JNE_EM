@@ -17,7 +17,7 @@ public:
 
     bool verificarTerritorio(int, string);
     void agregarPais(Pais);
-    string buscarPais(int);
+    Pais buscarPais(int);
     vector <Pais> borrarPais(int);
     void mostrarPaises();
     bool paisOcupado(int);
@@ -28,7 +28,7 @@ public:
     vector<Pais> obtenerDisponibles();
     string obtenerPropietario(int);
     void marcarOcupado(int, string);
-    void mostrarVecinos(int);
+    vector<string> mostrarVecinos(int);
     void getPaisTropas(int);
     void cambiarPropietario(int, string);
     Tarjeta buscarTarjeta(int);

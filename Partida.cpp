@@ -32,6 +32,11 @@ void Partida::agregarJugador(string n, string c, int i)
     this->jugadores.push_back(*j);
 }
 
+void Partida::agregarJugador(Jugador j)
+{
+    this->jugadores.push_back(j);
+}
+
 vector <Jugador> Partida::getJugadores()
 {
     return this->jugadores;
@@ -81,12 +86,11 @@ int Partida::pedirPais(string nombre, Continente c)
         cin>>pais;
         if(pais == 0)
             c = continentes[pedirContinente(nombre) - 1];
-        else if(c.buscarPais(pais) == "error" || !c.paisOcupado(pais))
+        else if(c.buscarPais(pais).getNombre() == Pais().getNombre() || !c.paisOcupado(pais))
             cout<<endl<<"El país no fue encontrado o está ocupado, inténtelo de nuevo"<<endl;
         else
             encontrado = true;
-    }
-    while(!encontrado);
+    }while(!encontrado);
     return pais;
 }
 
@@ -97,7 +101,7 @@ void Partida::escogerTerritorio()
     {
         c = pedirContinente(j.getNombre()) - 1;
         p = pedirPais(j.getNombre(), continentes[c]);
-        string territorio = continentes[c].buscarPais(p);
+        Pais territorio = continentes[c].buscarPais(p);
         j.agregarTerritorio(territorio);
         j.restarInfanteria(1);
         continentes[c].marcarOcupado(p, j.getNombre());
@@ -123,8 +127,8 @@ void Partida::asignarUltimasTropas()
     int i=0;
     for(Jugador &j : this->jugadores)
     {
-        j.mostrarTerritorios();
-        territorio = pedirTerritorio(i);
+        string mensaje = "Digite el numero de un territorio para colocar una tropa: ";
+        territorio = pedirPaisPorNumero(i, mensaje);
         pos = getPosicionesPais(territorio);
         continentes[pos[0]].sumarTropas(pos[1], 1);
         j.restarInfanteria(1);
@@ -132,18 +136,6 @@ void Partida::asignarUltimasTropas()
         cout<<endl<<"Le quedan "<<j.getInfanteria()<<" tropas"<<endl;
         i++;
     }
-}
-
-string Partida::pedirTerritorio(int pos)
-{
-    string t;
-    do{
-        cout<<endl<<"Digite el nombre de un territorio para colocar una tropa: ";
-        cin>>t;
-        if(jugadores[pos].buscarTerritorio(t) == "error")
-            cout<<endl<<"Dato erróneo, inténtelo de nuevo"<<endl;
-    }while(jugadores[pos].buscarTerritorio(t) == "error");
-    return t;
 }
 
 bool Partida::verTropas()
@@ -299,22 +291,28 @@ int Partida::pedirTropas(int pos)
     return trop;
 }
 
-string Partida::pedirPais(int pos, string mensaje)
+string Partida::pedirPaisPorNumero(int pos, string mensaje)
 {
-    string pais;
+    int pais;
+    string territorio;
     bool fallo = false, acierto = false;
-    do
-    {
-        cout << endl << mensaje << endl;
+    vector <Pais> paises = jugadores[pos].getTerritorios();  
+    do{  
+        for(int i = 0; i < paises.size(); i++)
+            cout << endl << i + 1 << ". " << paises[i].getNombre();  
+        cout << endl << endl << mensaje << endl;
         cin >> pais;
-        if(jugadores[pos].buscarTerritorio(pais) == "error")
-        {
+        if(pais > paises.size() || pais < 1){
             fallo = true;
             cout<<endl<<"No posee este territorio"<<endl;
         }
+        else{
+            territorio = paises[pais-1].getNombre();
+            fallo = false;
+        }
     }
     while(fallo);
-    return pais;
+    return territorio;
 }
 
 void Partida::agregarTropasTerr(int pos)
@@ -326,9 +324,8 @@ void Partida::agregarTropasTerr(int pos)
     do
     {
         cout<<endl<<"Tiene "<<jugadores[pos].getInfanteria()<<" tropas para agregar"<<endl;
-        jugadores[pos].ToTerritorios();
-        string mensaje = "Digite el nombre del pais al que le desea agregar tropas: ";
-        pais = pedirPais(pos, mensaje);
+        string mensaje = "Digite el número del pais al que le desea agregar tropas: ";
+        pais = pedirPaisPorNumero(pos, mensaje);
         vector <int> k = getPosicionesPais(pais);
         cout<<endl<<pais<<" tiene "<<continentes[k[0]].getTropas(k[1])<<" tropas"<<endl;
         trop = pedirTropas(pos);
@@ -343,27 +340,25 @@ void Partida::agregarTropasTerr(int pos)
 
 void Partida::atacar(int pos)
 {
-    string pais,atacar;
+    string pais;
     bool seguir = false;
     vector <int> i, j;
     char continuar;
     do{
         seguir = false;
         cout << endl << "---------- ATACAR ----------" << endl;
-        jugadores[pos].mostrarTerritorios();
         do
         {
-            string mensaje = "Digite el nombre del país desde el cual desea atacar: ";
-            pais = pedirPais(pos, mensaje);
+            string mensaje = "Digite el numero del país desde el cual desea atacar: ";
+            pais = pedirPaisPorNumero(pos, mensaje);
             i = getPosicionesPais(pais);
             if(continentes[i[0]].getTropas(i[1]) < 2)
                 cout<<endl<<"No puede atacar desde un país que tiene solo una tropa"<<endl;
         }
         while(continentes[i[0]].getTropas(i[1]) < 2);
-        buscarPaisesVecinos(i[0], i[1]);
         do
         {
-            j = paisAAtacar(pais);
+            j = paisAAtacar(i[0], i[1]);
             if(continentes[j[0]].verificarTerritorio(j[1], jugadores[pos].getNombre()))
                 cout<<endl<<"Usted posee este territorio, no lo puede atacar"<<endl;
             else
@@ -393,23 +388,25 @@ vector<int> Partida::getPosicionesPais(string pais)
     return pos;
 }
 
-vector <int> Partida::paisAAtacar(string pais)
+vector <int> Partida::paisAAtacar(int c, int p)
 {
-    string atacar;
+    int atacar;
+    string pais;
     vector <Pais> paises;
+    vector <string> vecinos = buscarPaisesVecinos(c, p);
     vector <int> pos;
     bool encontrado = false;
     do
     {
-        cout << endl << "Digite el nombre del país a atacar: ";
+        for(int i = 0; i < vecinos.size(); i++)
+            cout << endl << i + 1 << ". " << vecinos[i];
+        cout << endl << endl << "Digite el numero del país a atacar: ";
         cin >> atacar;
-        cout << endl << "Vamos a atacar a " << atacar << endl;
-        pos = getPosicionesPais(atacar);
+        pais = vecinos[atacar-1];
+        pos = getPosicionesPais(pais);
         paises = continentes[pos[0]].getPaises();
-        cout << endl << "Comparamos " << atacar << " con " << paises[pos[1]].getNombre() << endl;
-        if(atacar == paises[pos[1]].getNombre()){
+        if(pais == paises[pos[1]].getNombre()){
             encontrado = true;
-            cout << endl << "Hola" << endl;
         }
         else
             cout<<endl<<"No se encontró este país, inténtelo de nuevo"<<endl;
@@ -418,14 +415,14 @@ vector <int> Partida::paisAAtacar(string pais)
     return pos;
 }
 
-void Partida::buscarPaisesVecinos(int c, int p)
+vector <string> Partida::buscarPaisesVecinos(int c, int p)
 {
-    this->continentes[c].mostrarVecinos(p);
+    return this->continentes[c].mostrarVecinos(p);
 }
 
 char Partida::batalla(vector <int> ata, vector <int> def)
 {
-    //ata Atacante
+    //ata Atacantea
     //def Defensor
     char seguir;
     int fin = 0;
@@ -499,7 +496,7 @@ char Partida::batalla(vector <int> ata, vector <int> def)
             cout << endl << "Defensor se quedo sin tropas, atacante gana la batalla" << endl;
             int posD = buscarJugador(continentes[def[0]].obtenerPropietario(def[1]));
             
-            jugadores[posD].eliminarTerritorio(continentes[def[0]].buscarPais(def[1]+1));
+            jugadores[posD].eliminarTerritorio(continentes[def[0]].buscarPais(def[1]+1).getNombre());
 
             continentes[def[0]].cambiarPropietario(def[1], continentes[ata[0]].obtenerPropietario(ata[1]));
 
@@ -508,11 +505,11 @@ char Partida::batalla(vector <int> ata, vector <int> def)
             jugadores[posA].agregarTarjeta(continentes[def[0]].buscarTarjeta(def[1]));
 
             jugadores[posA].agregarTerritorio(continentes[def[0]].buscarPais(def[1]+1));
-            cout<<endl<<"Nuevo propietario de "<<continentes[def[0]].buscarPais(def[1]+1)<<": "<<continentes[def[0]].obtenerPropietario(def[1])<<endl;
+            cout<<endl<<"Nuevo propietario de "<<continentes[def[0]].buscarPais(def[1]+1).getNombre()<<": "<<continentes[def[0]].obtenerPropietario(def[1])<<endl;
 
             int tropas;
 
-            tropas = verificarTropas(continentes[ata[0]].getTropas(ata[1]) - 1, continentes[ata[0]].buscarPais(ata[1]+1));
+            tropas = verificarTropas(continentes[ata[0]].getTropas(ata[1]) - 1, continentes[ata[0]].buscarPais(ata[1]+1).getNombre());
 
             continentes[ata[0]].restarTropas(ata[1], tropas);
             continentes[def[0]].sumarTropas(def[1], tropas);
@@ -613,17 +610,16 @@ void Partida::fortalecer(int pos)
 {
     int enviar;
     cout << endl << "---------- FORTALECER ----------" << endl;
-    jugadores[pos].mostrarTerritorios();
-    string mensaje = "Digite el nombre del pais del cual desea movilizar tropas: ";
-    string pais = pedirPais(pos, mensaje);
+    string mensaje = "Digite el numero del pais del cual desea movilizar tropas: ";
+    string pais = pedirPaisPorNumero(pos, mensaje);
     vector <int> i = getPosicionesPais(pais);
     continentes[i[0]].getPaisTropas(i[1]);
     buscarPaisesVecinos(i[0], i[1]);
-    string mensaje2 = "Digite el nombre del pais al cual desea movilizar tropas: ";
-    string vecino = pedirPais(pos, mensaje2);
+    string mensaje2 = "Digite el numero del pais al cual desea movilizar tropas: ";
+    string vecino = pedirPaisPorNumero(pos, mensaje2);
     vector <int> j = getPosicionesPais(vecino);
     continentes[j[0]].getPaisTropas(j[1]);
-    enviar = verificarTropas(continentes[i[0]].getTropas(i[1])-1, continentes[i[0]].buscarPais(i[1]+1));
+    enviar = verificarTropas(continentes[i[0]].getTropas(i[1])-1, continentes[i[0]].buscarPais(i[1]+1).getNombre());
     continentes[j[0]].sumarTropas(j[1], enviar);
     continentes[i[0]].restarTropas(i[1], enviar);
     continentes[j[0]].getPaisTropas(j[1]);
@@ -652,19 +648,28 @@ string Partida::archivoTexto()
     texto += "Jugadores\n";
     for(Jugador j : this->jugadores){
         vector <Tarjeta> tarjetas = j.getTarjetas();
-        vector <string> territorios = j.getTerritorios();
+        vector <Pais> territorios = j.getTerritorios();
         vector <Ejercito> ejercitos = j.getEjercitos();
         texto += j.getNombre() + "/" + j.getColor() + "/";
-        for(Tarjeta t : tarjetas){
-            texto += to_string(t.getIdContinente()) + "-" + to_string(t.getIdPais()) + "-" + t.getEjercito() + "#";
+        for(int i = 0; i < tarjetas.size(); i++){
+            if(i > 0 && i < tarjetas.size() - 1){
+                texto += "#";
+            }
+            texto += to_string(tarjetas[i].getIdContinente()) + "-" + to_string(tarjetas[i].getIdPais()) + "-" + tarjetas[i].getEjercito();
         }
         texto += "/";
-        for(Ejercito e : ejercitos){
-            texto += to_string(e.getCantidad()) + "-" + e.getTipo() + "-" + e.getColor() + "#";
+        for(int i = 0; i < ejercitos.size(); i++){
+            texto += to_string(ejercitos[i].getCantidad()) + "-" + ejercitos[i].getTipo() + "-" + ejercitos[i].getColor();
+            if(i < ejercitos.size() - 1){
+                texto += "#";
+            }
         }
         texto += "/";
         for(int i = 0; i < territorios.size(); i++){
-            texto += territorios[i] + "#";
+            texto += territorios[i].getNombre() + "-" + to_string(territorios[i].getNumero());
+            if(i < territorios.size() - 1){
+                texto += "#";
+            }
         }
         texto += "\n";
     }
@@ -676,13 +681,16 @@ string Partida::archivoTexto()
     for(Continente c : continentes){
         texto += to_string(c.getNumero()) + "/";
         vector <Pais> paises = c.getPaises();
-        for(Pais p : paises){
-            texto += to_string(p.getNumero()) + "-" + p.getPropietario() + "-" + to_string(p.getTropas()) + "#";
+        for(int i = 0; i < paises.size(); i++){
+            texto += to_string(paises[i].getNumero()) + "-" + paises[i].getPropietario() + "-" + to_string(paises[i].getTropas());
+            if(i < paises.size() - 1){
+                texto += "#";
+            }
         }
         texto += "\n";
     }
 
-    texto += "FIN";
+    texto += "#\nFIN";
 
     return texto;
 }

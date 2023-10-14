@@ -9,9 +9,9 @@ Jugador::Jugador(string n, string c, vector<Ejercito> t)
     this->tropas = t;
 }
 
-void Jugador::agregarTerritorio(string t)
+void Jugador::agregarTerritorio(Pais p)
 {
-    this->territorios.push_back(t);
+    this->territorios.push_back(p);
 }
 
 int Jugador::contarTerritorios()
@@ -21,41 +21,38 @@ int Jugador::contarTerritorios()
 
 void Jugador::eliminarTerritorio(string terr)
 {
-    for(int i=0; i<territorios.size(); i++)
-    {
-        if(terr == territorios[i])
-            territorios.erase(territorios.begin() + i);
+    for(auto it = territorios.begin(); it != territorios.end(); ++it){
+        if(terr == it->getNombre())
+            territorios.erase(it);
     }
 }
 
 void Jugador::mostrarTerritorios()
 {
     cout<<endl<<"Territorios del jugador "<<this->nombre<<":"<<endl;
-    for(string &t : this->territorios)
-    {
-        cout<<endl<<t;
+    for(auto it = territorios.begin(); it != territorios.end(); ++it){
+        cout << endl << it->getNumero() << ". " << it->getNombre();
     }
     cout<<endl;
 }
 
-vector<string> Jugador:: getTerritorios()
+vector<Pais> Jugador:: getTerritorios()
 {
     return territorios;
 }
 
-void Jugador:: setTerritorios(vector<string> territorios)
+void Jugador:: setTerritorios(vector<Pais> territorios)
 {
     this->territorios = territorios;
 }
 
-string Jugador::buscarTerritorio(string t)
+int Jugador::buscarTerritorio(int t)
 {
-    for(int i=0; i<territorios.size(); i++)
-    {
-        if(t == territorios[i])
-            return territorios[i];
+    for(auto it = territorios.begin(); it != territorios.end(); ++it){
+        if(t == it->getNumero())
+            return it->getNumero();
     }
-    return "error";
+    return -1;
 }
 
 void Jugador::agregarTarjeta(Tarjeta tarjeta)
@@ -173,12 +170,4 @@ vector<Tarjeta> Jugador::getTarjetas()
 void Jugador::setTarjetas(vector <Tarjeta> tarjetas)
 {
     this->tarjetas = tarjetas;
-}
-
-void Jugador::ToTerritorios()
-{
-    for(int i=0; i<territorios.size(); i++)
-    {
-        cout<<endl<<i+1<<". "<<territorios[i];
-    }
 }

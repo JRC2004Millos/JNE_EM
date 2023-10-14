@@ -4,7 +4,7 @@ using namespace std;
 
 Pais::Pais()
 {
-
+    this->nombre = "vacio";
 }
 
 void Pais::agregarPaisVecino(string pais)
@@ -12,12 +12,12 @@ void Pais::agregarPaisVecino(string pais)
     this->paisesVecinos.push_back(pais);
 }
 
-void Pais::mostrarPaisesVecinos()
+vector <string> Pais::mostrarPaisesVecinos()
 {
-    cout<<endl<<"Fronteras de: "<<this->nombre<<endl;
+    vector <string> vecinos;
     for(int i = 0; i < this -> paisesVecinos.size(); i++)
-        cout <<endl << this->paisesVecinos[i];
-    cout<<endl;
+        vecinos.push_back(this->paisesVecinos[i]);
+    return vecinos;
 }
 
 void Pais::setNombre(string n)

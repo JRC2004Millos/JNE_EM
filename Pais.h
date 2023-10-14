@@ -18,7 +18,7 @@ class Pais
         Pais();
 
         void agregarPaisVecino(string);
-        void mostrarPaisesVecinos();
+        vector<string> mostrarPaisesVecinos();
 
         void setNombre(string);
         string getNombre();
