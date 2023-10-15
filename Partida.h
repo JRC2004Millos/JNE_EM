@@ -4,6 +4,9 @@
 #include "Jugador.h"
 #include "Continente.h"
 
+#include <queue>
+#include <vector>
+
 using namespace std;
 
 class Partida
@@ -45,6 +48,7 @@ public:
     void asignarUltimasTropas();
     int intercambiarCartas();
     string archivoTexto();
+    queue<string> leerTxt(string);
 
     void setJugadores(vector<Jugador>);
 };

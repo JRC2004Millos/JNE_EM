@@ -27,17 +27,6 @@ bool Continente::verificarTerritorio(int n, string jugador)
     return false;
 }
 
-vector<Pais> Continente::obtenerDisponibles()
-{
-    vector <Pais> disponibles;
-    for(Pais p : this->paises)
-    {
-        if(p.getPropietario() == "libre")
-            disponibles.push_back(p);
-    }
-    return disponibles;
-}
-
 vector <Pais> Continente::borrarPais(int pais)
 {
     for(auto it = paises.begin(); it != paises.end(); ++it)
@@ -50,7 +39,9 @@ vector <Pais> Continente::borrarPais(int pais)
 
 void Continente::cambiarPropietario(int n, string nom)
 {
+    cout << endl << "Nuevo propietario de " <<  paises[n].getNombre() << ": ";
     this->paises[n].setPropietario(nom);
+    cout << paises[n].getPropietario() << endl;
 }
 
 void Continente::mostrarPaises()
@@ -125,6 +116,11 @@ void Continente::sumarTropas(int p, int trop)
 void Continente::restarTropas(int p, int trop)
 {
     this->paises[p].restarTropas(trop);
+}
+
+void Continente::setTropas(int p, int trop)
+{
+    this->paises[p].setTropas(trop);
 }
 //GETTERS Y SETTERS
 

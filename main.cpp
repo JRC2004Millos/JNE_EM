@@ -209,114 +209,19 @@ bool inicializarArchivo(bool b, string s)
         b = true;
         string nombreArchivo = getNombreArchivo(s);
         vector <string> archivo = separar(nombreArchivo, '.');
-        if(archivo[1] == "txt")
-            leerTxt(nombreArchivo);
+        if(archivo[1] == "txt"){
+            colaJugadores = partida->leerTxt(nombreArchivo);
+            cout << endl << "El siguiente turno es para " << colaJugadores.front() << endl;
+        }
         else if(archivo[1] == "bin" || archivo[1] == "dat")
             leerBin(nombreArchivo);
-
-        cout<<endl<< "'"<<nombreArchivo<<"'"<<" no contiene información válida para inicializar el juego."<< endl;
     }
     return b;
 }
 
 void leerTxt(string fileName)
 {
-    string leer;
-    ifstream file;
-    file.open(fileName);
-    if(!file)
-        cout << endl << "'" << fileName << "'" << " no contiene información válida para inicializar el juego." << endl;
-    else{
-        partida->leerContinentes();
-        getline(file, leer);
-        while(leer != "FIN"){
-            if(leer == "Turnos"){
-                getline(file, leer);
-                queue <string> cola;
-                while(leer != "#"){
-                    cola.push(leer);
-                    getline(file, leer);
-                }
-            }
-            else if(leer == "Jugadores"){
-                getline(file, leer);
-                while(leer != "#"){
-                    vector <string> cadenas = separar(leer, '/');
-                    Jugador j;
-                    j.setNombre(cadenas[0]);
-                    cout << endl << cadenas[0];
-                    j.setColor(cadenas[1]);
-                    cout << endl << cadenas[1];                 
-                    if(cadenas[2] != ""){
-                        vector <string> tarjetas = separar(cadenas[2], '#');
-                        vector <Tarjeta> listaTarjetas;
-                        for(int i = 0; i < tarjetas.size(); i++){
-                            vector <string> tarjeta = separar(tarjetas[i], '-');
-                            Tarjeta t;
-                            t.setIdContinente(stoi(tarjeta[0]));
-                            cout << endl << tarjeta[0];
-                            t.setIdPais(stoi(tarjeta[1]));
-                            cout << endl << tarjeta[1];
-                            t.setEjercito(tarjeta[2]);
-                            cout << endl << tarjeta[2];
-                            listaTarjetas.push_back(t);
-                        }
-                        j.setTarjetas(listaTarjetas);
-                    }        
-                    vector <string> ejercitos = separar(cadenas[3], '#');
-                    vector <Ejercito> listaEjercitos;
-                    for(int i = 0; i < ejercitos.size(); i++){
-                        vector <string> ejercito = separar(ejercitos[i], '-');
-                        Ejercito e;
-                        e.setCantidad(stoi(ejercito[0]));
-                        cout << endl << ejercito[0];
-                        e.setTipo(ejercito[1]);
-                        cout << endl << ejercito[1];
-                        e.setColor(ejercito[2]);
-                        cout << endl << ejercito[2];
-                        listaEjercitos.push_back(e);
-                    }
-                    j.setEjercitos(listaEjercitos);
-                    vector <string> territorios = separar(cadenas[4], '#');
-                    vector <Pais> paises;
-                    for(int i = 0; i < territorios.size(); i++){
-                        vector < string> territorio = separar(territorios[i], '-');
-                        Pais p;
-                        p.setNombre(territorio[0]);
-                        p.setNumero(stoi(territorio[1]));
-                        p.setPropietario(cadenas[0]);
-                        paises.push_back(p);
-                    }
-                    j.setTerritorios(paises);
-                    partida->agregarJugador(j);
-                    getline(file, leer);
-                }
-            }
-            else if(leer == "Continentes"){
-                getline(file, leer);
-                vector <Continente> listaContinentes;
-                while(leer != "#"){
-                    vector <string> cadenas = separar(leer, '/');
-                    Continente c;
-                    c.setNumero(stoi(cadenas[0]));
-                    cout << endl << cadenas[0];
-                    vector <string> paises = separar(cadenas[1], '#');
-                    vector <Pais> listaPaises;
-                    for(int i = 0; i < paises.size(); i++){
-                        vector <string> datos = separar(paises[i], '-');
-                        Pais p;
-                        p.setNumero(stoi(datos[0]));
-                        p.setPropietario(datos[1]);
-                        p.setTropas(stoi(datos[2]));
-                        listaPaises.push_back(p);
-                    }
-                    c.setPaises(listaPaises);
-                    listaContinentes.push_back(c);
-                }
-            }
-            getline(file, leer);
-        }
-    }
+    colaJugadores = partida->leerTxt(fileName);
 }
 
 void leerBin(string fileName){
@@ -419,9 +324,6 @@ void guardar_comprimido(bool b, string s, fstream& bin)
         }
         else
         {
-            
-
-
             cout<<endl<<"La partida ha sido codificada y guardada correctamente en '" << nombreArchivo << "'"<< endl;
             bin.close();
         }
