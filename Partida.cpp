@@ -298,7 +298,7 @@ string Partida::pedirPaisPorNumero(int pos, string mensaje)
     vector <Pais> paises = jugadores[pos].getTerritorios();  
     do{  
         for(int i = 0; i < paises.size(); i++)
-            cout << endl << i + 1 << ". " << paises[i].getNombre();  
+            cout << endl << i + 1 << ". " << paises[i].getNombre() << " - Tropas: " << paises[i].getTropas();  
         cout << endl << endl << mensaje << endl;
         cin >> pais;
         if(pais > paises.size() || pais < 1){

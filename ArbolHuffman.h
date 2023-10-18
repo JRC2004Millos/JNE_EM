@@ -1,38 +1,21 @@
 #ifndef ARBOLHUFFMAN_H
 #define ARBOLHUFFMAN_H
-#include <queue>
-#include <iostream>
-#include <unordered_map>
 
 #include "NodoHuffman.h"
+#include <unordered_map>
+#include <string>
+#include <vector>
 
-// Definición del comparador personalizado
-template <class T>
-struct ComparadorFrecuencia {
-    bool operator()(NodoHuffman<T>* nodo1, NodoHuffman<T>* nodo2) const {
-        // Comparar los nodos basados en sus frecuencias
-        return nodo1->obtenerFrecuencia() > nodo2->obtenerFrecuencia();
-    }
-};
-
-template <class T>
 class ArbolHuffman {
-    protected:
-        NodoHuffman<T> *raiz;
-    public:
-        ArbolHuffman();
-        ~ArbolHuffman();
-        void liberarArbol(NodoHuffman<T>* nodo);
-        bool esVacio();
-        void insertar(T simbolo, int frecuencia); // Inserta un símbolo con su frecuencia
-        std::string codificarDatos(const std::string& datos);
-        void asignarCodigosHuffman(NodoHuffman<T>* nodo, const std::string& codigoActual, std::unordered_map<T, std::string>& codigos);
-        std::string decodificarDatos(const std::string& codigo);
-        void mostrarCodigos(NodoHuffman<T>* nodo, std::string codigoActual);
-        void mostrarCodigos();
-        void inOrden(NodoHuffman<T>* nodo);
-        void verificarArbol();
+public:
+    NodoHuffman* construirArbol(const std::unordered_map<char, int>& mapaFrecuencia);
+    std::string codificarMensaje(NodoHuffman* raiz, const std::string& mensaje);
+    void decodificarMensaje(NodoHuffman* raiz, const std::string& mensajeCodificado);
+    std::vector<NodoHuffman*> obtenerNodosDelArbol(NodoHuffman* raiz);
+    void obtenerNodosDelArbolAux(NodoHuffman* nodo, std::vector<NodoHuffman*>& nodos);
+
+private:
+    void codificarMensajeAux(NodoHuffman* nodo, std::string codigo, std::unordered_map<char, std::string>& mapaCodificacion);
 };
 
-#include "ArbolHuffman.h"
-#endif
+#endif // ARBOLHUFFMAN_H

@@ -26,7 +26,6 @@ public:
     void sumarTropas(int, int);
     void restarTropas(int, int);
     void setTropas(int, int);
-    vector<Pais> obtenerDisponibles();
     string obtenerPropietario(int);
     void marcarOcupado(int, string);
     vector<string> mostrarVecinos(int);

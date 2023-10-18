@@ -5,6 +5,7 @@
 #include <list>
 #include <queue>
 #include <map>
+#include <string>
 
 #include "ArbolHuffman.h"
 #include "Partida.h"
@@ -19,7 +20,7 @@ bool inicializarArchivo(bool,string);
 void turno(bool,string);
 void conquista_barata(bool);
 void guardar(bool,string,fstream&);
-void guardar_comprimido(bool,string,fstream&);
+void guardar_comprimido(bool,string);
 void costo_conquista(bool);
 void llenarColores(list<string>*);
 string asignarColor(int, list<string> *);
@@ -30,7 +31,6 @@ queue <string> pedirColaJugadores();
 vector <string> separar(string,char);
 void leerTxt(string);
 void leerBin(string);
-void ConteoDeVariables(string);
 
 int cantJugadores = 0;
 
@@ -49,7 +49,7 @@ void comandos()
     int seleccion;
     string comando, separado;
     bool inicializado = false;
-    fstream txt, bin;
+    fstream txt;
     do
     {
         cout<<endl<<"$";
@@ -65,10 +65,10 @@ void comandos()
             conquista_barata(inicializado);
         else if(comando.find("turno")==0)
             turno(inicializado, comando);
-        else if(comando.find("guardar")==0)
+        else if(comando.find("guardar_comprimido")==0)
+            guardar_comprimido(inicializado, comando);
+        else if(comando.find("guarda")==0)
             guardar(inicializado, comando, txt);
-        else if(comando.find("guarda_comprimido")==0)
-            guardar_comprimido(inicializado, comando, bin);
         else if(comando=="costo_conquista")
             costo_conquista(inicializado);
         else if(comando=="salir")
@@ -213,7 +213,7 @@ bool inicializarArchivo(bool b, string s)
             colaJugadores = partida->leerTxt(nombreArchivo);
             cout << endl << "El siguiente turno es para " << colaJugadores.front() << endl;
         }
-        else if(archivo[1] == "bin" || archivo[1] == "dat")
+        else if(archivo[1] == "bin")
             leerBin(nombreArchivo);
     }
     return b;
@@ -224,8 +224,49 @@ void leerTxt(string fileName)
     colaJugadores = partida->leerTxt(fileName);
 }
 
-void leerBin(string fileName){
+void leerBin(string fileName)
+{
+    vector <string> archivo = separar(fileName, '.');
+    string mapFile = "mapa" + archivo[0] + ".txt";
+    ifstream archivoLectura(mapFile);
+    
+    if(archivoLectura.is_open()){
+        unordered_map<char, int> mapaLeido;
+        string leer;
+        getline(archivoLectura, leer);
+        while(!archivoLectura.eof()){   
+            vector <string> cadenas = separar(leer, '&');
+            char* punteroChar = new char[cadenas[0].size() + 1]; 
+            strcpy(punteroChar, cadenas[0].c_str());
+            char caracter = *punteroChar;
+            cout << endl << caracter;
+            int frecuencia = stoi(cadenas[1]);
+            cout << " " << frecuencia << endl;
+            if(caracter == '|')
+                mapaLeido['\n'] = frecuencia;
+            else
+                mapaLeido[caracter] = frecuencia;
+            getline(archivoLectura, leer);
+        }   
+        archivoLectura.close();
 
+        ArbolHuffman arbol;
+        NodoHuffman* raiz = arbol.construirArbol(mapaLeido);
+
+        ifstream file(fileName, ios::binary);
+        string linea;
+
+        if(file.is_open()){
+            while(getline(file, linea)){
+                arbol.decodificarMensaje(raiz, linea);
+            }
+            file.close();
+        }
+        else
+            cout << endl << fileName << " no contiene información válida para inicializar el juego." << endl;
+    }
+    else
+        cout << endl << mapFile << " no contiene información válida para inicializar el juego." << endl;
 }
 
 queue <string> pedirColaJugadores()
@@ -302,7 +343,7 @@ void guardar(bool b, string s, fstream& txt)
             txt << "#" << endl;
             colaJugadores = colaAux;
             txt << partida->archivoTexto();
-            cout<<endl <<"La partida ha sido guardada correctamente en '" << nombreArchivo << "'"<< endl;
+            cout<<endl <<"La partida ha sido guardada correctamente."<< endl;
         }
         txt.close();
     }
@@ -312,26 +353,86 @@ void guardar(bool b, string s, fstream& txt)
     }
 }
 
-void guardar_comprimido(bool b, string s, fstream& bin)
+void guardar_comprimido(bool b, string s)
 {
     if(b)
     {
-        string nombreArchivo = getNombreArchivo(s) + ".dat";
-        bin.open(nombreArchivo,ios::binary |ios::out);
-        if(!bin)
-        {
-            cout<<endl<<"La partida no ha sido codificada ni guardada correctamente."<<endl;
+        string nombreArchivo = getNombreArchivo(s);
+
+        string leer = nombreArchivo + ".txt";
+
+        nombreArchivo += ".bin";
+
+        unordered_map<char, int> mapaFrecuencia;
+
+        fstream txt;
+
+        guardar(b, s, txt);
+
+        ifstream archivo(leer);
+        if (!archivo.is_open()) {
+            cerr << "La partida no ha sido codificada ni guardada correctamente." << std::endl;
+        }
+
+        string mapFile = "mapa" + leer;
+        ofstream mapTxt(mapFile);
+
+        if(mapTxt.is_open()){
+            char caracter;
+            while (archivo.get(caracter)) {
+                if (mapaFrecuencia.find(caracter) != mapaFrecuencia.end())
+                    mapaFrecuencia[caracter]++;              
+                else 
+                    mapaFrecuencia[caracter] = 1;
+            }
+            for (const auto &par : mapaFrecuencia) {
+                char clave = par.first;
+                int valor = par.second;
+                if(clave == '\n')
+                    mapTxt << "|" << "&" << valor << endl;
+                else
+                    mapTxt << clave << "&" << valor << endl;
+            }
+
         }
         else
-        {
-            cout<<endl<<"La partida ha sido codificada y guardada correctamente en '" << nombreArchivo << "'"<< endl;
-            bin.close();
+            cout << endl << "La partida no ha sido codificada ni guardada correctamente." << endl;
+        mapTxt.close();     
+        archivo.close();
+
+        ArbolHuffman arbolHuffman;
+        NodoHuffman* raiz = arbolHuffman.construirArbol(mapaFrecuencia);
+
+        //vector <NodoHuffman*> nodos = arbolHuffman.obtenerNodosDelArbol(raiz);
+
+        ofstream Binarchivo(nombreArchivo, ios::binary | ios::out);
+
+        // Leer el mensaje desde un archivo
+        archivo.open(leer);
+        if (!archivo.is_open()) {
+            cerr << "La partida no ha sido codificada ni guardada correctamente." << endl;
         }
+
+        string mensaje, mensajecodificado, mensajeFinal = "";
+        while(!archivo.eof()){
+            getline(archivo, mensaje);
+
+            mensajecodificado = arbolHuffman.codificarMensaje(raiz, mensaje);
+            mensajeFinal += mensajecodificado + "\n";
+
+            arbolHuffman.decodificarMensaje(raiz, mensajecodificado);
+        }
+        archivo.close();
+
+        if (Binarchivo.is_open()) {
+            Binarchivo.write(mensajeFinal.c_str(), mensajeFinal.size());
+            cout << "La partida ha sido codificada y guardada correctamente." << endl;
+        } else
+            cerr << "La partida no ha sido codificada ni guardada correctamente." << endl;
+        Binarchivo.close();
     }
     else
-    {
         cout<<endl<<"Esta partida no ha sido inicializada correctamente."<<endl;
-    }
 }
 
 string getId(string x)
@@ -365,34 +466,4 @@ vector<string> separar(string cadena, char separador)
     }
 
     return resultado;
-}
-
-void ConteoDeVariables(string Archivo){
-
-   ifstream file(Archivo);
-
-    if (!file) {
-        cout << "No se pudo abrir el archivo: " << Archivo << endl;
-        exit;
-    }
-
-    map<char, int> charCount;
-    char character;
-
-    while (file.get(character)) {
-        charCount[character]++;
-    }
-
-    file.close();
-    //ArbolHuffman <char> arbol = ArbolHuffman <char>();
-    for (const auto& pair : charCount) {
-        char character = pair.first;
-        int count = pair.second;
-        //arbol.insertar(character,count);
-
-        if (count > 1)
-        { // Solo mostrar caracteres que se repiten más de una vez
-            cout << "'" << character << "': " << count << " veces" << endl;
-        }
-  }
 }
