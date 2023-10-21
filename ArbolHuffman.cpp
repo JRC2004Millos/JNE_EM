@@ -62,9 +62,10 @@ void ArbolHuffman::codificarMensajeAux(NodoHuffman* nodo, std::string codigo, st
 }
 std::stringstream mensajeDecodificado;
 
-void ArbolHuffman::decodificarMensaje(NodoHuffman* raiz, const std::string& mensaje) {
+std::string ArbolHuffman::decodificarMensaje(NodoHuffman* raiz, const std::string& mensaje) {
     NodoHuffman* nodoActual = raiz;
     
+    std::string decodificado = "";
   
     for (char bit : mensaje) {
         if (bit == '0') {
@@ -75,17 +76,18 @@ void ArbolHuffman::decodificarMensaje(NodoHuffman* raiz, const std::string& mens
 
         // Solo imprimir si es un nodo hoja
         if (nodoActual->izquierda == nullptr && nodoActual->derecha == nullptr) {
-            std::cout << nodoActual->dato;
+            decodificado += nodoActual->dato;
             nodoActual = raiz;  // Reiniciar para decodificar el próximo carácter
         }
     }
 
     // Asegurarse de imprimir el último carácter si es un nodo hoja
     if (nodoActual != raiz && nodoActual->izquierda == nullptr && nodoActual->derecha == nullptr) {
-        std::cout << nodoActual->dato;
+        decodificado += nodoActual->dato;
     }
 
-    std::cout << std::endl;
+    decodificado += '\n';
+    return decodificado;
 }
 
 std::vector<NodoHuffman*> ArbolHuffman::obtenerNodosDelArbol(NodoHuffman* raiz) {

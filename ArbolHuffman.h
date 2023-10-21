@@ -10,7 +10,7 @@ class ArbolHuffman {
 public:
     NodoHuffman* construirArbol(const std::unordered_map<char, int>& mapaFrecuencia);
     std::string codificarMensaje(NodoHuffman* raiz, const std::string& mensaje);
-    void decodificarMensaje(NodoHuffman* raiz, const std::string& mensajeCodificado);
+    std::string decodificarMensaje(NodoHuffman* raiz, const std::string& mensajeCodificado);
     std::vector<NodoHuffman*> obtenerNodosDelArbol(NodoHuffman* raiz);
     void obtenerNodosDelArbolAux(NodoHuffman* nodo, std::vector<NodoHuffman*>& nodos);
 

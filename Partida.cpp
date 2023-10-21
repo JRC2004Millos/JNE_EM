@@ -9,8 +9,6 @@
 #include <time.h>
 #include <random>
 
-using namespace std;
-
 vector <string> split(string,char);
 
 Partida::Partida()
