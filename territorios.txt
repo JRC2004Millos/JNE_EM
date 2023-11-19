@@ -4,7 +4,7 @@ PAISES
 1-alaska
 alberta/kamchatka
 2-alberta
-territorio noroccidental/ontario/estados unidos occidentales
+alaska/territorio noroccidental/ontario/estados unidos occidentales
 3-america central
 venezuela/estados unidos orientales/estados unidos occidentales
 4-estados unidos orientales

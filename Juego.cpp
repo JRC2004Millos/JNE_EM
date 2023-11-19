@@ -3,10 +3,12 @@
 #include <fstream>
 #include <list>
 #include <string>
+#include <stack>
 
 #include "ArbolHuffman.h"
 #include "Partida.h"
 #include "Juego.h"
+#include "Graph.cpp"
 
 using namespace std;
 
@@ -37,8 +39,8 @@ void Juego::comandos()
             guardar_comprimido(inicializado, comando);
         else if(comando.find("guarda")==0)
             guardar(inicializado, comando, txt);
-        else if(comando=="costo_conquista")
-            costo_conquista(inicializado);
+        else if(comando.find("costo_conquista")==0)
+            costo_conquista(inicializado, comando);
         else if(comando=="salir")
             cout<<endl<<"Cerrando el juego...";
         else if(comando=="" || comando=="\n")
@@ -261,9 +263,14 @@ void Juego::turno(bool b, string s)
             cout<<endl<<"No es el turno de este jugador"<<endl;
         else
         {
-            partida.turno(pos);
-            colaJugadores.pop();
-            colaJugadores.push(proxJugador);
+            if(partida.verificarGanador(id)){
+                cout << endl << "Esta partida ya tuvo un ganador" << endl;
+            }
+            else{
+                partida.turno(pos);
+                colaJugadores.pop();
+                colaJugadores.push(proxJugador);
+            }
         }
         cout<<endl << "El turno del jugador " << id << " ha terminado."<< endl;
     }
@@ -271,25 +278,197 @@ void Juego::turno(bool b, string s)
         cout<<endl << "Esta partida no ha sido inicializada correctamente." << endl;
 }
 
-void Juego::conquista_barata(bool juego)
+void Juego::conquista_barata(bool b)
 {
-    if(juego==false)
+    if(!b)
         cout<<endl<< "El juego no ha sido inicializado correctamente" << endl;
-    else
-        cout<<endl << "Jugador no válido"<< endl;
+    else{
+        crearGrafo();
+        string jugador = colaJugadores.front();
+        int posJ = partida.buscarJugador(jugador);
+        if(partida.verificarGanador(jugador))
+            cout << endl << "Esta partida ya tuvo un ganador." << endl;
+        else{
+            vector<Pais>paisesAtacar;
+            for(Nodo<Pais>&p : territorios.vertices){
+                if(p.info.getPropietario() != jugador)
+                    paisesAtacar.push_back(p.info);
+            }
+            vector<vector <string>> camino;
+            int minimo = INT_MAX;
+            int posMinimo = 0;
+            for(Pais p : paisesAtacar)
+                camino.push_back(buscarPaisMasCercano(getIndexFromNombre(p.getNombre()), jugador));            
+            for(int i = 0; i < camino.size() - 1; i++){              
+                for(int j = 0; j < camino[i].size() - 1; j++){
+                    int cantTropas = 0;
+                    for(Nodo<Pais> &nodo : territorios.vertices)
+                        if(nodo.info.getNombre() == camino[i][j])
+                            cantTropas += nodo.info.getTropas();
+                    if(cantTropas < minimo){
+                        minimo = cantTropas;
+                        posMinimo = i;
+                    }
+                }  
+            }
+            stack<string>caminoFinal;
+            for(int i = 0; i < camino[posMinimo].size(); i++)
+                caminoFinal.push(camino[posMinimo][i]);
+
+            cout << endl << "La conquista mas barata es avanzar sobre el territorio " << caminoFinal.top() << " desde el territorio ";
+            caminoFinal.pop();
+            cout << caminoFinal.top() << ". Para conquistar el territorio " << camino[posMinimo].back() << ", debe atacar desde " << camino[posMinimo].front();
+            if(caminoFinal.size() > 1){
+                cout << ", pasando por los territorios ";
+                while(!caminoFinal.empty()){
+                    if(caminoFinal.size() == 1){
+                        cout << caminoFinal.top();
+                        break;
+                    }
+                    else{
+                        cout << caminoFinal.top() << ", ";
+                        caminoFinal.pop();
+                    }
+                }
+            }
+            cout << ". Debe conquistar " << minimo << " unidades de ejercito" << endl;
+        }
+    }
 }
 
-void Juego::costo_conquista(bool b)
+int Juego::getIndexFromNombre(string nombre) {
+    for (int i = 0; i < territorios.vertices.size(); ++i) {
+        if (territorios.vertices[i].info.getNombre() == nombre) {
+            return i;
+        }
+    }
+    
+    // Si el nombre no se encuentra, puedes devolver un valor especial como -1
+    return -1;
+}
+
+void Juego::costo_conquista(bool b, string comando)
 {
     if(b)
     {
-        cout<<endl<< "Para conquistar el territorio <territorio>, debe atacar desde <territorio_1>, pasando por los territorios <territorio_2>, <territorio_3>, ..., <territorio_m>. Debe conquistar<n>unidades de ejército."<< endl;
+        string territorio = getId(comando);
+        string jugador = colaJugadores.front();
+        vector<string> camino;
+        stack<string> caminoReal;
+        int cantTropas = 0;
+        if(partida.verificarGanador(jugador))
+            cout << endl << "Esta partida ya tuvo un ganador." << endl;
+        else{
+            crearGrafo();
+            for(Nodo <Pais> &nodo : this->territorios.vertices){
+                if(nodo.info.getNombre() == territorio){
+                    if(buscarPaisMasCercano(nodo.info.getNumero(), jugador).size() > 0)
+                        camino = buscarPaisMasCercano(nodo.info.getNumero(), jugador);
+                    else
+                        cout << endl << "No se encontro un territorio cercano" << endl;
+                }
+            }
+            for(int i = 0; i < camino.size() - 1; i++){
+                for(Nodo<Pais> &nodo : territorios.vertices)
+                    if(nodo.info.getNombre() == camino[i])
+                        cantTropas += nodo.info.getTropas();
+                string acs = camino[i];
+                caminoReal.push(acs);
+            }
+            caminoReal.emplace(camino.back());
+            cout<<endl<< "Para conquistar el territorio " << territorio << ", debe atacar desde " << caminoReal.top() << ", pasando por los territorios ";
+            caminoReal.pop();
+            while(!caminoReal.empty()){
+                if(caminoReal.size() <= 2){
+                    cout << caminoReal.top();
+                    break;
+                }
+                else{
+                    cout << caminoReal.top() << ", ";
+                    caminoReal.pop();
+                }      
+            }
+            cout << ". Debe conquistar " << cantTropas << " unidades de ejercito."<< endl;
+        }
     }
     else
     {
         cout<<endl<< "Esta partida no ha sido inicializada correctamente."<< endl;
     }
 }
+
+vector<string> Juego::buscarPaisMasCercano(int pos, string jugador){
+    unordered_map<int, bool> visitados;
+    queue<pair<int, vector<string>>> cola;
+    cola.push({pos, {territorios.vertices[pos].info.getNombre()}});
+    visitados[pos] = true;
+    while (!cola.empty()) {
+        int indiceActual = cola.front().first;
+        vector<string> caminoActual = cola.front().second;
+        cola.pop();
+       
+        if (territorios.vertices[indiceActual].info.getPropietario() == jugador) 
+            return caminoActual;
+        
+        for (const auto& vecino : territorios.vertices[indiceActual].adj) {
+            int indiceVecino = vecino.first;
+            int distanciaVecino = vecino.second;
+
+            if (!visitados[indiceVecino]) {
+                vector<string> nuevoCamino = caminoActual;
+                nuevoCamino.push_back(territorios.vertices[indiceVecino].info.getNombre());
+                
+                cola.push({indiceVecino, nuevoCamino});
+                visitados[indiceVecino] = true;
+            }
+        }
+    }
+    return {};
+}
+
+stack<string> Juego::buscarConquistaBarata(string propietario) {
+    stack<string> mejorCamino;
+    int tropasMenos = INT_MAX;
+
+    for (int i = 0; i < territorios.vertices.size(); ++i) {
+        unordered_map<int, bool> visitados;
+        stack<pair<int, stack<string>>> pila;
+        stack<string> caminoInicial;
+        caminoInicial.push(territorios.vertices[i].info.getNombre());
+        pila.push({i, caminoInicial});
+        visitados[i] = true;
+
+        while (!pila.empty()) {
+            int indiceActual = pila.top().first;
+            stack<string> caminoActual = pila.top().second;
+            pila.pop();
+
+            for (const auto& vecino : territorios.vertices[indiceActual].adj) {
+                int indiceVecino = vecino.first;
+                int distanciaVecino = vecino.second;
+
+                if (!visitados[indiceVecino]) {
+                    stack<string> nuevoCamino = caminoActual;
+                    nuevoCamino.push(territorios.vertices[indiceVecino].info.getNombre());
+
+                    pila.push({indiceVecino, nuevoCamino});
+                    visitados[indiceVecino] = true;
+                }
+            }
+
+            // Verificar si el territorio actual es conquistable y tiene menos tropas
+            if (territorios.vertices[indiceActual].info.getPropietario() != propietario) {
+                if (territorios.vertices[indiceActual].info.getTropas() < tropasMenos) {
+                    tropasMenos = territorios.vertices[indiceActual].info.getTropas();
+                    mejorCamino = caminoActual;
+                }
+            }
+        }
+    }
+
+    return mejorCamino;
+}
+
 
 void Juego::guardar(bool b, string s, fstream& txt)
 {
@@ -555,4 +734,35 @@ vector<string> Juego::separar(string cadena, char separador)
     }
 
     return resultado;
+}
+
+void Juego::crearGrafo(){
+    territorios = Graph<Pais>();
+    vector<Pais> paises = partida.obtenerTerritorios();
+    int i = 0;
+    for(Pais p : paises){
+        p.setNumero(i);
+        this->territorios.addVertex(p);
+        i++;
+    }
+    for(Nodo<Pais> &nodoA : this->territorios.vertices){
+        vector <string> vecinos = nodoA.info.mostrarPaisesVecinos();
+        vector <int> posVecinos;
+        for(Nodo <Pais> &nodoB : this->territorios.vertices)
+            for(int i = 0; i < vecinos.size(); i++)
+                if(vecinos[i] == nodoB.info.getNombre())
+                    posVecinos.push_back(nodoB.info.getNumero());
+        for(int i = 0; i < posVecinos.size(); i++){
+            int peso = calcularPeso(nodoA.info.getNumero(), posVecinos[i]);
+            this->territorios.addArc(nodoA.info.getNumero(), posVecinos[i], peso);
+        }
+    }
+    int nAristas = 0;
+    for(int i = 0; i < territorios.vertices.size(); i++)
+        nAristas += territorios.vertices[i].adj.size();
+    territorios.generateGraphTxt(territorios.vertices.size(), nAristas);
+}
+
+int Juego::calcularPeso(int a, int b){
+    return territorios.vertices[a].info.getTropas() - territorios.vertices[b].info.getTropas();
 }

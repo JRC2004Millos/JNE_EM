@@ -22,6 +22,8 @@ public:
     void eliminarTerritorio(string);
     void agregarTarjeta(Tarjeta);
     void eliminarTarjetas(string);
+    void sumarTropas(string, int);
+    void restarTropas(string, int);
 
     //getters y setters
     void mostrarTerritorios();

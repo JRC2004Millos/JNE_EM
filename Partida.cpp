@@ -99,6 +99,7 @@ void Partida::escogerTerritorio()
         c = pedirContinente(j.getNombre()) - 1;
         p = pedirPais(j.getNombre(), continentes[c]);
         Pais territorio = continentes[c].buscarPais(p);
+        territorio.sumarTropas(1);
         j.agregarTerritorio(territorio);
         j.restarInfanteria(1);
         continentes[c].marcarOcupado(p, j.getNombre());
@@ -127,6 +128,7 @@ void Partida::asignarUltimasTropas()
         string mensaje = "Digite el numero de un territorio para colocar una tropa: ";
         territorio = pedirPaisPorNumero(i, mensaje);
         pos = getPosicionesPais(territorio);
+        j.sumarTropas(continentes[pos[0]].getPaises()[pos[1]].getNombre(), 1);
         continentes[pos[0]].sumarTropas(pos[1], 1);
         j.restarInfanteria(1);
         continentes[pos[0]].getPaisTropas(pos[1]);
@@ -191,6 +193,7 @@ vector<Continente> Partida::leerContinentes()
                     p.setNumero(stoi(cadenas[0]));
                     p.setNombre(cadenas[1]);
                     p.setPropietario("libre");
+                    p.setTropas(0);
                     getline(archivo,leer);
                     vecinos = split(leer, '/');
                     for(int i = 0; i < vecinos.size(); i++)
@@ -327,6 +330,7 @@ void Partida::agregarTropasTerr(int pos)
         cout<<endl<<pais<<" tiene "<<continentes[k[0]].getTropas(k[1])<<" tropas"<<endl;
         trop = pedirTropas(pos);
         continentes[k[0]].sumarTropas(k[1], trop);
+        jugadores[pos].sumarTropas(continentes[k[0]].buscarPais(k[1]).getNombre(), trop);
         cout<<endl<<pais<<" quedó con "<<continentes[k[0]].getTropas(k[1])<<" tropas"<<endl;
         cout << endl << "Desea agregar mas tropas: si = s, no = n" << endl;
         cin>>seguir;
@@ -467,37 +471,40 @@ char Partida::batalla(vector <int> ata, vector <int> def)
         for(int i = 0; i < defensor.size(); i++)
             totalDefensor += defensor[i];
 
+        int posA = buscarJugador(continentes[ata[0]].obtenerPropietario(ata[1]));
+        int posD = buscarJugador(continentes[def[0]].obtenerPropietario(def[1]));
+
         //Comparar resultados para ver quien gano
         //Gana el atacante
         if(totalAtacante > totalDefensor)
         {
             cout << endl << "Gana el atacante!" << endl;
             continentes[def[0]].restarTropas(def[1], 1);
+            jugadores[posD].restarTropas(continentes[def[0]].buscarPais(def[1]).getNombre(), 1);
         }
         //Gana el defensor
         else if(totalAtacante < totalDefensor)
         {
             cout << endl << "Gana el defensor!" << endl;
             continentes[ata[0]].restarTropas(ata[1], 1);
+            jugadores[posA].restarTropas(continentes[ata[0]].buscarPais(ata[1]).getNombre(), 1);
         }
         //Empate, gana el defensor
         else if(totalAtacante == totalDefensor)
         {
             cout << endl << "El resultado fue un empate, gana el defensor!" << endl;
             continentes[ata[0]].restarTropas(ata[1], 1);
+            jugadores[posA].restarTropas(continentes[ata[0]].buscarPais(ata[1]).getNombre(), 1);
         }
 
         //Comparacion para ver si se acabo la partida
         if(continentes[def[0]].getTropas(def[1]) == 0)
         {
             cout << endl << "Defensor se quedo sin tropas, atacante gana la batalla" << endl;
-            int posD = buscarJugador(continentes[def[0]].obtenerPropietario(def[1]));
             
             jugadores[posD].eliminarTerritorio(continentes[def[0]].buscarPais(def[1]+1).getNombre());
 
             continentes[def[0]].cambiarPropietario(def[1], continentes[ata[0]].obtenerPropietario(ata[1]));
-
-            int posA = buscarJugador(continentes[ata[0]].obtenerPropietario(ata[1]));
             
             jugadores[posA].agregarTarjeta(continentes[def[0]].buscarTarjeta(def[1]));
 
@@ -508,7 +515,9 @@ char Partida::batalla(vector <int> ata, vector <int> def)
             tropas = verificarTropas(continentes[ata[0]].getTropas(ata[1]) - 1, continentes[ata[0]].buscarPais(ata[1]+1).getNombre());
 
             continentes[ata[0]].restarTropas(ata[1], tropas);
+            jugadores[posA].restarTropas(continentes[ata[0]].buscarPais(ata[1]).getNombre(), tropas);
             continentes[def[0]].sumarTropas(def[1], tropas);
+            jugadores[posD].sumarTropas(continentes[def[0]].buscarPais(def[1]).getNombre(), tropas);
 
             continentes[ata[0]].getPaisTropas(ata[1]);
             continentes[def[0]].getPaisTropas(def[1]);
@@ -536,6 +545,23 @@ char Partida::batalla(vector <int> ata, vector <int> def)
 
 int Partida::lanzarDado () {
     return rand() % 6 + 1; // Número aleatorio entre 1 y 6
+}
+
+bool Partida::verificarGanador(string jugador){
+    int contContinentes = 0;
+    for(Continente c : continentes){
+        int contPaises = 0;
+        vector<Pais>paises = c.getPaises();
+        for(Pais p : paises){
+            if(p.getPropietario() == jugador)
+                contPaises++;
+        }
+        if(contPaises == paises.size())
+            contContinentes++;
+    }
+    if(contContinentes == continentes.size())
+        return true;
+    return false;
 }
 
 void Partida::turno(int pos)
@@ -574,7 +600,11 @@ void Partida::turno(int pos)
     ubicarEjercito(pos);
     agregarTropasTerr(pos);
     atacar(pos);
+    if(verificarGanador(jugadores[pos].getNombre())){
+        cout << endl << "Felicitaciones! Ha ganado la partida" << endl;
+    }
     fortalecer(pos);
+
 }
 
 int Partida::intercambiarCartas()
@@ -799,6 +829,15 @@ queue <string> Partida::leerTxt(string fileName)
 void Partida::setJugadores(vector <Jugador> jugadores)
 {
     this->jugadores = jugadores;
+}
+
+vector <Pais> Partida::obtenerTerritorios(){
+    vector <Pais> territorios;
+    for(Continente c : continentes){
+        vector <Pais> paises = c.getPaises();
+        territorios.insert(territorios.end(), paises.begin(), paises.end());
+    }
+    return territorios;
 }
 
 vector<string> split(string cadena, char separador)

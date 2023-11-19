@@ -1,14 +1,18 @@
 #include "Partida.h"
+#include "Graph.h"
 
 #include <list>
 #include <queue>
 #include <bitset>
+#include <stack>
 
 class Juego{
     private:
     int cantJugadores;
     Partida partida;
     queue <string> colaJugadores;
+    Graph <Pais> territorios;
+    bool ganada;
     public:
         Juego();
         void comandos();
@@ -20,7 +24,7 @@ class Juego{
         void turno(bool,string);
         void conquista_barata(bool);
         void guardar(bool,string,fstream&);
-        void costo_conquista(bool);
+        void costo_conquista(bool,string);
         void llenarColores(list<string>*);
         string asignarColor(int, list<string> *);
         string getNombreArchivo(string);
@@ -32,4 +36,9 @@ class Juego{
         void leerBin(string);
         bitset<8> stringToBitset(string);
         string quitarEspacios(string);
+        void crearGrafo();
+        int calcularPeso(int, int);
+        vector<string> buscarPaisMasCercano(int, string);
+        stack<string> buscarConquistaBarata(string);
+        int getIndexFromNombre(string);
 };

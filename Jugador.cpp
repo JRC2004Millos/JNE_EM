@@ -92,6 +92,18 @@ void Jugador::eliminarTarjetas(string eliminar)
     }
 }
 
+void Jugador::sumarTropas(string pais, int tropas){
+    for(Pais &p : territorios)
+        if(p.getNombre() == pais)
+            p.sumarTropas(tropas);
+}
+
+void Jugador::restarTropas(string pais, int tropas){
+    for(Pais &p : territorios)
+        if(p.getNombre() == pais)
+            p.restarTropas(tropas);
+}
+
 string Jugador::getNombre()
 {
     return this->nombre;

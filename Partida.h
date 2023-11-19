@@ -49,6 +49,8 @@ public:
     int intercambiarCartas();
     string archivoTexto();
     queue<string> leerTxt(string);
+    bool verificarGanador(string);
+    vector<Pais> obtenerTerritorios();
 
     void setJugadores(vector<Jugador>);
 };
