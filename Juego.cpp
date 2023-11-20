@@ -347,7 +347,7 @@ int Juego::getIndexFromNombre(string nombre) {
     return -1;
 }
 
-void Juego::costo_conquista(bool b, string comando)
+bool Juego::costo_conquista(bool b, string comando)
 {
     if(b)
     {
@@ -356,16 +356,20 @@ void Juego::costo_conquista(bool b, string comando)
         vector<string> camino;
         stack<string> caminoReal;
         int cantTropas = 0;
-        if(partida.verificarGanador(jugador))
+        if(partida.verificarGanador(jugador)){
             cout << endl << "Esta partida ya tuvo un ganador." << endl;
+            return false;
+        }
         else{
             crearGrafo();
             for(Nodo <Pais> &nodo : this->territorios.vertices){
                 if(nodo.info.getNombre() == territorio){
                     if(buscarPaisMasCercano(nodo.info.getNumero(), jugador).size() > 0)
                         camino = buscarPaisMasCercano(nodo.info.getNumero(), jugador);
-                    else
+                    else{
                         cout << endl << "No se encontro un territorio cercano" << endl;
+                        return false;
+                    }
                 }
             }
             for(int i = 0; i < camino.size() - 1; i++){
@@ -389,11 +393,13 @@ void Juego::costo_conquista(bool b, string comando)
                 }      
             }
             cout << ". Debe conquistar " << cantTropas << " unidades de ejercito."<< endl;
+            return true;
         }
     }
     else
     {
         cout<<endl<< "Esta partida no ha sido inicializada correctamente."<< endl;
+        return false;
     }
 }
 
@@ -403,72 +409,27 @@ vector<string> Juego::buscarPaisMasCercano(int pos, string jugador){
     cola.push({pos, {territorios.vertices[pos].info.getNombre()}});
     visitados[pos] = true;
     while (!cola.empty()) {
-        int indiceActual = cola.front().first;
+        int posActual = cola.front().first;
         vector<string> caminoActual = cola.front().second;
         cola.pop();
        
-        if (territorios.vertices[indiceActual].info.getPropietario() == jugador) 
+        if (territorios.vertices[posActual].info.getPropietario() == jugador) 
             return caminoActual;
         
-        for (const auto& vecino : territorios.vertices[indiceActual].adj) {
-            int indiceVecino = vecino.first;
-            int distanciaVecino = vecino.second;
+        for (const auto& vecino : territorios.vertices[posActual].adj) {
+            int posVecino = vecino.first;
 
-            if (!visitados[indiceVecino]) {
+            if (!visitados[posVecino]) {
                 vector<string> nuevoCamino = caminoActual;
-                nuevoCamino.push_back(territorios.vertices[indiceVecino].info.getNombre());
+                nuevoCamino.push_back(territorios.vertices[posVecino].info.getNombre());
                 
-                cola.push({indiceVecino, nuevoCamino});
-                visitados[indiceVecino] = true;
+                cola.push({posVecino, nuevoCamino});
+                visitados[posVecino] = true;
             }
         }
     }
     return {};
 }
-
-stack<string> Juego::buscarConquistaBarata(string propietario) {
-    stack<string> mejorCamino;
-    int tropasMenos = INT_MAX;
-
-    for (int i = 0; i < territorios.vertices.size(); ++i) {
-        unordered_map<int, bool> visitados;
-        stack<pair<int, stack<string>>> pila;
-        stack<string> caminoInicial;
-        caminoInicial.push(territorios.vertices[i].info.getNombre());
-        pila.push({i, caminoInicial});
-        visitados[i] = true;
-
-        while (!pila.empty()) {
-            int indiceActual = pila.top().first;
-            stack<string> caminoActual = pila.top().second;
-            pila.pop();
-
-            for (const auto& vecino : territorios.vertices[indiceActual].adj) {
-                int indiceVecino = vecino.first;
-                int distanciaVecino = vecino.second;
-
-                if (!visitados[indiceVecino]) {
-                    stack<string> nuevoCamino = caminoActual;
-                    nuevoCamino.push(territorios.vertices[indiceVecino].info.getNombre());
-
-                    pila.push({indiceVecino, nuevoCamino});
-                    visitados[indiceVecino] = true;
-                }
-            }
-
-            // Verificar si el territorio actual es conquistable y tiene menos tropas
-            if (territorios.vertices[indiceActual].info.getPropietario() != propietario) {
-                if (territorios.vertices[indiceActual].info.getTropas() < tropasMenos) {
-                    tropasMenos = territorios.vertices[indiceActual].info.getTropas();
-                    mejorCamino = caminoActual;
-                }
-            }
-        }
-    }
-
-    return mejorCamino;
-}
-
 
 void Juego::guardar(bool b, string s, fstream& txt)
 {
@@ -757,10 +718,6 @@ void Juego::crearGrafo(){
             this->territorios.addArc(nodoA.info.getNumero(), posVecinos[i], peso);
         }
     }
-    int nAristas = 0;
-    for(int i = 0; i < territorios.vertices.size(); i++)
-        nAristas += territorios.vertices[i].adj.size();
-    territorios.generateGraphTxt(territorios.vertices.size(), nAristas);
 }
 
 int Juego::calcularPeso(int a, int b){

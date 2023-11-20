@@ -1,7 +1,3 @@
-//
-// Created by talkysafe143 on 13/11/23.
-//
-
 #include "Nodo.h"
 
 template<class T>

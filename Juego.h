@@ -24,7 +24,7 @@ class Juego{
         void turno(bool,string);
         void conquista_barata(bool);
         void guardar(bool,string,fstream&);
-        void costo_conquista(bool,string);
+        bool costo_conquista(bool,string);
         void llenarColores(list<string>*);
         string asignarColor(int, list<string> *);
         string getNombreArchivo(string);
@@ -39,6 +39,5 @@ class Juego{
         void crearGrafo();
         int calcularPeso(int, int);
         vector<string> buscarPaisMasCercano(int, string);
-        stack<string> buscarConquistaBarata(string);
         int getIndexFromNombre(string);
 };
