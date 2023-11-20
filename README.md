@@ -5,8 +5,7 @@ Proyecto Estructuras de Datos
 
 # Para correr el programa
 
-Después de descargar el archivo .zip y abrir la consola del sistema desde esa carpeta
-se debe usar el siguiente comando para ejecutar el programa:
+Después de descargar el archivo .zip y abrir la consola del sistema desde esa carpeta se debe usar el siguiente comando para ejecutar el programa:
 
   > g++ -std=c++11 -o main ArbolHuffman.cpp Continente.cpp Ejercito.cpp Juego.cpp Jugador.cpp main.cpp NodoHuffman.cpp Pais.cpp Partida.cpp Tarjeta.cpp Graph.cpp Nodo.cpp
 
