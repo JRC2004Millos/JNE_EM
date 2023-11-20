@@ -20,7 +20,11 @@ Seguido de:
 
 Para ejecutar las pruebas debe usar este comando:
 
-  > g++ -std=c++11 -o main test-comprimido.cpp ArbolHuffman.cpp Continente.cpp Ejercito.cpp Juego.cpp Jugador.cpp NodoHuffman.cpp Pais.cpp Partida.cpp Tarjeta.cpp
+  > g++ -std=c++11 -o main test-comprimido.cpp ArbolHuffman.cpp Continente.cpp Ejercito.cpp Juego.cpp Jugador.cpp NodoHuffman.cpp Pais.cpp Partida.cpp Tarjeta.cpp Graph.cpp Nodo.cpp
+
+ Seguido de:
+
+  > main -s
 
   Este es el link al documento del proyecto
 
